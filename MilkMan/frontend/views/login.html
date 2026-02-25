@@ -1,0 +1,53 @@
+<div class="login-bg">
+
+  <div class="container">
+
+    <div class="row justify-content-center align-items-center" style="min-height:100vh;">
+
+      <div class="col-md-4">
+
+        <div class="card shadow-lg border-0 rounded-4">
+
+          <div class="card-body p-4">
+
+            <h3 class="text-center mb-4 text-primary fw-bold">
+              Fresh-Dairy Login
+            </h3>
+
+            <form ng-submit="login()">
+
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email"
+                       class="form-control form-control-lg"
+                       ng-model="email"
+                       placeholder="Enter email"
+                       required>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password"
+                       class="form-control form-control-lg"
+                       ng-model="password"
+                       placeholder="Enter password"
+                       required>
+              </div>
+
+              <button class="btn btn-primary w-100 btn-lg">
+                Login
+              </button>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

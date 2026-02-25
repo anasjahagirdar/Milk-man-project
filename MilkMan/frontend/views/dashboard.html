@@ -1,0 +1,60 @@
+<div class="container-fluid px-4 dashboard-bg">
+
+<h2 class="dashboard-title"> Dashboard</h2>
+
+<div class="row g-3">
+
+<!-- CUSTOMERS -->
+<div class="col-md-3">
+<a href="#!/customers" style="text-decoration:none">
+<div class="card bg-primary text-white p-4 shadow-lg">
+<h2 style="font-weight:700">{{stats.customers || 0}}</h2>
+<div style="font-size:18px">Customers</div>
+</div>
+</a>
+</div>
+
+<!-- STAFF -->
+<div class="col-md-3">
+<a href="#!/staff" style="text-decoration:none">
+<div class="card bg-success text-white p-4 shadow-lg">
+<h2 style="font-weight:700">{{stats.staff || 0}}</h2>
+<div style="font-size:18px">Staff</div>
+</div>
+</a>
+</div>
+
+<!-- PRODUCTS -->
+<div class="col-md-3">
+<a href="#!/products" style="text-decoration:none">
+<div class="card bg-warning text-dark p-4 shadow-lg">
+<h2 style="font-weight:700">{{stats.products || 0}}</h2>
+<div style="font-size:18px">Products</div>
+</div>
+</a>
+</div>
+
+<!-- SUBSCRIPTIONS -->
+<div class="col-md-3">
+<a href="#!/subscriptions" style="text-decoration:none">
+<div class="card bg-info text-white p-4 shadow-lg">
+<h2 style="font-weight:700">{{stats.subscriptions || 0}}</h2>
+<div style="font-size:18px">Subscriptions</div>
+</div>
+</a>
+</div>
+
+<!-- ORDERS -->
+<div class="col-md-3">
+<a href="#!/orders" style="text-decoration:none">
+<div class="card bg-danger text-white p-4 shadow-lg">
+<h2 style="font-weight:700">{{stats.orders || 0}}</h2>
+<div style="font-size:18px">Orders</div>
+</div>
+</a>
+</div>
+
+</div>
+
+
+</div>

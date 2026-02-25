@@ -1,0 +1,96 @@
+<div class="container">
+
+<h3 class="mb-4">Subscriptions</h3>
+
+<div class="card shadow-sm p-4 mb-4">
+
+<h5 class="mb-3">Add New Subscription</h5>
+
+<div class="mb-2">
+<label class="form-label">Customer</label>
+<select class="form-control"
+        ng-model="customer_id"
+        ng-options="c.id as c.name for c in customers">
+<option value="">Select Customer</option>
+</select>
+</div>
+
+<div class="mb-2">
+<label class="form-label">Product</label>
+<select class="form-control"
+        ng-model="product_id"
+        ng-options="p.id as p.name for p in products">
+<option value="">Select Product</option>
+</select>
+</div>
+
+<div class="mb-2">
+<label class="form-label">Start Date</label>
+<input type="date"
+       class="form-control"
+       ng-model="start_date">
+</div>
+
+<div class="mb-2">
+<label class="form-label">Quantity</label>
+<input type="number"
+       class="form-control"
+       placeholder="Enter quantity"
+       ng-model="quantity">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Payment Status</label>
+<select class="form-control"
+        ng-model="payment_status">
+<option value="pending">Pending</option>
+<option value="paid">Paid</option>
+</select>
+</div>
+
+<button class="btn btn-primary w-100"
+        ng-click="add()">
+Add Subscription
+</button>
+
+</div>
+
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Customer</th>
+<th>Product</th>
+<th>Qty</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+<tr ng-repeat="s in subscriptions">
+
+<td>{{s.id}}</td>
+<td>{{customersMap[s.customer_id]}}</td>
+<td>{{productsMap[s.product_id]}}</td>
+<td>{{s.quantity}}</td>
+<td>{{s.payment_status}}</td>
+
+<td>
+
+<button class="btn btn-warning btn-sm me-1"
+        ng-click="edit(s)">
+Edit
+</button>
+
+<button class="btn btn-danger btn-sm"
+        ng-click="remove(s.id)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>

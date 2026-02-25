@@ -1,0 +1,51 @@
+<div class="container">
+
+<h3 class="mb-4">Customers</h3>
+
+<div class="card p-3 mb-4">
+
+<h5>Add Customer</h5>
+
+<input class="form-control mb-2" placeholder="Name" ng-model="name">
+<input class="form-control mb-2" placeholder="Email" ng-model="email">
+<input class="form-control mb-2" placeholder="Password" ng-model="password">
+
+<button class="btn btn-primary" ng-click="addCustomer()">Add</button>
+
+</div>
+
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+
+<tr ng-repeat="c in customers">
+
+<td>{{c.id}}</td>
+<td>{{c.name}}</td>
+<td>{{c.email}}</td>
+
+<td>
+
+<button class="btn btn-warning btn-sm me-1"
+        ng-click="edit(c)">
+Edit
+</button>
+
+<button class="btn btn-danger btn-sm"
+        ng-click="remove(c.id)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>

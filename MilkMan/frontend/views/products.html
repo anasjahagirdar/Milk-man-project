@@ -1,0 +1,67 @@
+<div class="container">
+
+<h3 class="mb-4">Products</h3>
+
+<div class="card p-3 mb-4">
+
+<input class="form-control mb-2" placeholder="Name" ng-model="name">
+
+<select class="form-control mb-2" ng-model="category_id"
+        ng-options="c.id as c.name for c in categories">
+<option value="">Select Category</option>
+</select>
+
+<select class="form-control mb-2" ng-model="size">
+<option>0.5L</option>
+<option>1L</option>
+<option>2L</option>
+</select>
+
+<input class="form-control mb-2" placeholder="Price" ng-model="price">
+<input class="form-control mb-2" placeholder="Stock" ng-model="stock">
+
+<button class="btn btn-primary" ng-click="add()">Add Product</button>
+
+</div>
+
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Category</th>
+<th>Size</th>
+<th>Price</th>
+<th>Stock</th>
+<th>Action</th>
+</tr>
+
+<tr ng-repeat="p in products">
+
+<td>{{p.id}}</td>
+<td>{{p.name}}</td>
+<td>{{categoryMap[p.category_id]}}</td>
+<td>{{p.size}}</td>
+<td>{{p.price}}</td>
+<td>{{p.stock}}</td>
+
+<td>
+
+<button class="btn btn-warning btn-sm me-1"
+        ng-click="edit(p)">
+Edit
+</button>
+
+<button class="btn btn-danger btn-sm"
+        ng-click="remove(p.id)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>

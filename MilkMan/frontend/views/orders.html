@@ -1,0 +1,77 @@
+<div class="container">
+
+<h3 class="mb-4">Orders</h3>
+
+<div class="card shadow-sm p-4 mb-4">
+
+<h5 class="mb-3">Create Order</h5>
+
+<label>Customer</label>
+<select class="form-control mb-2"
+        ng-model="customer_id"
+        ng-options="c.id as c.name for c in customers">
+<option value="">Select Customer</option>
+</select>
+
+<label>Product</label>
+<select class="form-control mb-2"
+        ng-model="product_id"
+        ng-options="p.id as p.name for p in products">
+<option value="">Select Product</option>
+</select>
+
+<label>Size</label>
+<select class="form-control mb-2" ng-model="size">
+<option>0.5L</option>
+<option>1L</option>
+<option>2L</option>
+</select>
+
+<label>Quantity</label>
+<input type="number" class="form-control mb-3" ng-model="quantity">
+
+<button class="btn btn-success w-100" ng-click="add()">Place Order</button>
+
+</div>
+
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Customer</th>
+<th>Product</th>
+<th>Size</th>
+<th>Qty</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+<tr ng-repeat="o in orders">
+
+<td>{{o.id}}</td>
+<td>{{customersMap[o.customer_id]}}</td>
+<td>{{productsMap[o.product_id]}}</td>
+<td>{{o.size}}</td>
+<td>{{o.quantity}}</td>
+<td>{{o.status}}</td>
+
+<td>
+
+<button class="btn btn-warning btn-sm me-1"
+        ng-click="edit(o)">
+Edit
+</button>
+
+<button class="btn btn-danger btn-sm"
+        ng-click="remove(o.id)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>

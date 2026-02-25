@@ -1,0 +1,33 @@
+<div class="container">
+
+<h3 class="mb-4">Categories</h3>
+
+<div class="card p-3 mb-4">
+
+<input class="form-control mb-2"
+       placeholder="Category name"
+       ng-model="name">
+
+<button class="btn btn-primary"
+        ng-click="add()">
+Add Category
+</button>
+
+</div>
+
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+</tr>
+
+<tr ng-repeat="c in categories">
+<td>{{c.id}}</td>
+<td>{{c.name}}</td>
+</tr>
+
+</table>
+
+</div>

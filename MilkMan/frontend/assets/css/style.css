@@ -1,0 +1,216 @@
+/* ===== GLOBAL ===== */
+
+body {
+    background: #f4f6f9;
+    font-family: "Segoe UI",'Poppins', Tahoma, sans-serif;
+}
+
+
+/* ===== CARDS ===== */
+
+.card {
+    border-radius: 14px;
+    border: none;
+    transition: 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+
+/* ===== DASHBOARD CARDS ===== */
+
+.card.bg-primary,
+.card.bg-success,
+.card.bg-warning,
+.card.bg-info,
+.card.bg-danger {
+    border-radius: 16px;
+    font-weight: 600;
+}
+
+
+/* ===== BUTTONS ===== */
+
+.btn {
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-weight: 500;
+}
+
+.btn-primary { background:#3b82f6; border:none; }
+.btn-success { background:#22c55e; border:none; }
+.btn-warning { background:#f59e0b; border:none; }
+.btn-danger  { background:#ef4444; border:none; }
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+
+/* ===== TABLE ===== */
+
+.table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table th {
+    background: #1f2937;
+    color: white;
+    font-weight: 600;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+
+/* ===== INPUTS ===== */
+
+.form-control {
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 2px rgba(59,130,246,.2);
+    border-color: #3b82f6;
+}
+
+
+/* ===== SIDEBAR STYLE ===== */
+
+.sidebar-link {
+    display:block;
+    padding:8px 12px;
+    border-radius:8px;
+    color:white;
+    text-decoration:none;
+    margin-bottom:6px;
+}
+
+.sidebar-link:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+
+/* ===== PAGE TITLES ===== */
+
+h3, h2 {
+    font-weight: 600;
+}
+
+.logout-btn{
+background:linear-gradient(45deg,#ef4444,#dc2626);
+color:white;
+border:none;
+padding:6px 16px;
+border-radius:10px;
+font-weight:600;
+transition:0.25s;
+}
+
+.logout-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(0,0,0,0.2);
+}
+
+
+/* DASHBOARD BACKGROUND IMAGE */
+
+.dashboard-bg{
+background-image:url("../cows2.avif");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+min-height:85vh;   /* VERY IMPORTANT */
+width:100%;
+
+border-radius:20px;
+padding:40px;
+position:relative;
+overflow:hidden;
+}
+
+.dashboard-bg::before{
+content:"";
+position:absolute;
+inset:0;
+background:rgba(255,255,255,0.55);
+border-radius:20px;
+z-index:0;   /* IMPORTANT */
+}
+
+.dashboard-bg > *{
+position:relative;
+z-index:1;
+}
+
+.dashboard-title{
+font-size:42px;
+font-weight:800;
+color:#222;
+letter-spacing:1px;
+margin-bottom:25px;
+}
+
+/* MAIN HEADER STYLE */
+
+.main-title{
+font-size:44px;
+font-weight:900;
+letter-spacing:1px;
+color:#1f2d3d;
+
+background:linear-gradient(90deg,#2b7cff,#00c6ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+/* ===== LOGIN PAGE PREMIUM BACKGROUND ===== */
+
+.login-bg{
+background-image:url("https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=1920");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+}
+
+/* darker overlay for professional look */
+.login-bg::before{
+content:"";
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.35);
+}
+
+/* keep login card above overlay */
+.login-bg > *{
+position:relative;
+z-index:1;
+}
+
+
+/* ===== GLASS LOGIN CARD EFFECT ===== */
+
+.login-bg .card{
+background:rgba(255,255,255,0.92);
+backdrop-filter:blur(6px);
+border-radius:18px;
+box-shadow:0 20px 50px rgba(0,0,0,0.35);
+}

@@ -1,0 +1,53 @@
+<div class="container">
+
+<h3 class="mb-4">Staff</h3>
+
+<div class="card p-3 mb-4">
+
+<h5>Add Staff</h5>
+
+<input class="form-control mb-2" placeholder="Name" ng-model="name">
+<input class="form-control mb-2" placeholder="Email" ng-model="email">
+<input class="form-control mb-2" placeholder="Password" ng-model="password">
+<input class="form-control mb-2" placeholder="Role" ng-model="role">
+
+<button class="btn btn-primary" ng-click="add()">Add</button>
+
+</div>
+
+<table class="table table-bordered">
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Role</th>
+<th>Action</th>
+</tr>
+
+<tr ng-repeat="s in staff">
+
+<td>{{s.id}}</td>
+<td>{{s.name}}</td>
+<td>{{s.email}}</td>
+<td>{{s.role}}</td>
+
+<td>
+
+<button class="btn btn-warning btn-sm me-1"
+        ng-click="edit(s)">
+Edit
+</button>
+
+<button class="btn btn-danger btn-sm"
+        ng-click="remove(s.id)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
