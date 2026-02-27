@@ -3,6 +3,8 @@ app.controller("ProductController", function($scope,$http){
 $scope.categoryMap = {};
 $scope.categories = [];
 $scope.editId = null;
+$scope.search = "";
+$scope.units = ["L","ml","kg","g","pieces","custom"];
 
 
 // LOAD CATEGORIES
@@ -26,7 +28,7 @@ $scope.categoryMap[c.id] = c.name;
 // LOAD PRODUCTS
 function loadProducts(){
 
-$http.get("http://127.0.0.1:5000/api/products/")
+$http.get("http://127.0.0.1:5000/api/products/?active=true")
 .then(function(res){
 $scope.products = res.data;
 });
@@ -50,8 +52,10 @@ $http.put(
 name:$scope.name,
 category_id:$scope.category_id,
 size:$scope.size,
+unit:$scope.unit,
 price:$scope.price,
-stock:$scope.stock
+stock:$scope.stock,
+is_active:$scope.is_active
 }
 )
 
@@ -64,8 +68,10 @@ $scope.editId=null;
 $scope.name="";
 $scope.category_id="";
 $scope.size="";
+$scope.unit="";
 $scope.price="";
 $scope.stock="";
+$scope.is_active=true;
 
 loadProducts();
 
@@ -82,8 +88,10 @@ $http.post(
 name:$scope.name,
 category_id:$scope.category_id,
 size:$scope.size,
+unit:$scope.unit,
 price:$scope.price,
-stock:$scope.stock
+stock:$scope.stock,
+is_active:$scope.is_active
 }
 )
 
@@ -95,8 +103,10 @@ alert("Product Added");
 $scope.name="";
 $scope.category_id="";
 $scope.size="";
+$scope.unit="";
 $scope.price="";
 $scope.stock="";
+$scope.is_active=true;
 
 loadProducts();
 
@@ -132,9 +142,20 @@ $scope.editId = p.id;
 $scope.name = p.name;
 $scope.category_id = p.category_id;
 $scope.size = p.size;
+$scope.unit = p.unit;
 $scope.price = p.price;
 $scope.stock = p.stock;
+$scope.is_active = p.is_active;
 
+};
+
+// FILTERED LIST
+$scope.filtered = function(){
+var term = ($scope.search||"").toLowerCase();
+if(!term) return $scope.products;
+return ($scope.products||[]).filter(function(p){
+return (p.name||"").toLowerCase().includes(term) || (p.unit||"").toLowerCase().includes(term);
+});
 };
 
 });

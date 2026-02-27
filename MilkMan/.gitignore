@@ -6,7 +6,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-db.sqlite3
+
+# =========================
+# Flask Instance & Database
+# =========================
+instance/
+*.db
 
 # =========================
 # Node

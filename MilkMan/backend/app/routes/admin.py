@@ -1,7 +1,9 @@
 
 from flask import Blueprint, request, jsonify
 from app import db
+from app.authz import require_roles
 from app.models.admin import Admin
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from werkzeug.security import generate_password_hash
 
 
@@ -13,7 +15,13 @@ admin_bp = Blueprint("admin", __name__)
 
 def create_admin():
 
-    data = request.get_json()
+    if Admin.query.count() > 0:
+        verify_jwt_in_request()
+        claims = get_jwt() or {}
+        if claims.get("role") != "admin":
+            return jsonify({"error": "Forbidden"}), 403
+
+    data = request.get_json() or {}
 
     admin = Admin(
         name=data["name"],
@@ -29,7 +37,7 @@ def create_admin():
 
 # GET ALL ADMINS
 @admin_bp.route("/", methods=["GET"])
-
+@require_roles("admin")
 def get_admins():
 
     admins = Admin.query.all()
@@ -39,7 +47,7 @@ def get_admins():
 
 # GET ONE ADMIN
 @admin_bp.route("/<int:id>", methods=["GET"])
-
+@require_roles("admin")
 def get_admin(id):
 
     admin = Admin.query.get_or_404(id)
@@ -49,12 +57,12 @@ def get_admin(id):
 
 # UPDATE ADMIN
 @admin_bp.route("/<int:id>", methods=["PUT"])
-
+@require_roles("admin")
 def update_admin(id):
 
     admin = Admin.query.get_or_404(id)
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     admin.name = data.get("name", admin.name)
     admin.email = data.get("email", admin.email)
@@ -69,7 +77,7 @@ def update_admin(id):
 
 # DELETE ADMIN
 @admin_bp.route("/<int:id>", methods=["DELETE"])
-
+@require_roles("admin")
 def delete_admin(id):
 
     admin = Admin.query.get_or_404(id)

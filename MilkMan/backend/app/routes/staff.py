@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
+from app.authz import require_roles
 from app.models.staff import Staff
 from werkzeug.security import generate_password_hash
 
@@ -8,9 +9,10 @@ staff_bp = Blueprint("staff", __name__)
 
 # CREATE STAFF
 @staff_bp.route("/", methods=["POST"])
+@require_roles("admin")
 def create_staff():
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     staff = Staff(
         name=data["name"],
@@ -28,6 +30,7 @@ def create_staff():
 
 # GET ALL STAFF
 @staff_bp.route("/", methods=["GET"])
+@require_roles("admin", "staff")
 def get_staff():
 
     staff = Staff.query.all()
@@ -37,6 +40,7 @@ def get_staff():
 
 # GET ONE STAFF
 @staff_bp.route("/<int:id>", methods=["GET"])
+@require_roles("admin", "staff")
 def get_one_staff(id):
 
     staff = Staff.query.get_or_404(id)
@@ -46,10 +50,11 @@ def get_one_staff(id):
 
 # UPDATE STAFF
 @staff_bp.route("/<int:id>", methods=["PUT"])
+@require_roles("admin")
 def update_staff(id):
 
     staff = Staff.query.get_or_404(id)
-    data = request.get_json()
+    data = request.get_json() or {}
 
     staff.name = data.get("name", staff.name)
     staff.email = data.get("email", staff.email)
@@ -66,6 +71,7 @@ def update_staff(id):
 
 # DELETE STAFF
 @staff_bp.route("/<int:id>", methods=["DELETE"])
+@require_roles("admin")
 def delete_staff(id):
 
     staff = Staff.query.get_or_404(id)

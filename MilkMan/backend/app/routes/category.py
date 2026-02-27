@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
+from app.authz import require_roles
 from app.models.category import Category
 
 category_bp = Blueprint("category", __name__)
@@ -7,9 +8,10 @@ category_bp = Blueprint("category", __name__)
 
 # CREATE CATEGORY
 @category_bp.route("/", methods=["POST"])
+@require_roles("admin")
 def create_category():
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     category = Category(
         name=data["name"],
@@ -42,11 +44,12 @@ def get_category(id):
 
 # UPDATE CATEGORY
 @category_bp.route("/<int:id>", methods=["PUT"])
+@require_roles("admin")
 def update_category(id):
 
     category = Category.query.get_or_404(id)
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     category.name = data.get("name", category.name)
     category.description = data.get("description", category.description)
@@ -58,6 +61,7 @@ def update_category(id):
 
 # DELETE CATEGORY
 @category_bp.route("/<int:id>", methods=["DELETE"])
+@require_roles("admin")
 def delete_category(id):
 
     category = Category.query.get_or_404(id)

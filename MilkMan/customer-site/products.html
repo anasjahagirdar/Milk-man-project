@@ -1,56 +1,259 @@
-<!DOCTYPE html>
-<html ng-app="app">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MilkMan — Products</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="mm-page">
+    <nav class="navbar navbar-expand-lg mm-nav sticky-top">
+      <div class="container">
+        <a class="navbar-brand mm-brand" href="index.html">MilkMan</a>
+        <div class="ms-auto d-flex gap-2 align-items-center">
+          <a id="mm-account-link" class="btn btn-sm mm-btn-secondary" href="login.html">Login</a>
+          <button id="mm-logout" class="btn btn-sm btn-outline-danger d-none" type="button">
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
 
-<head>
+    <main class="container py-5">
+      <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+        <div>
+          <h1 class="mm-section-title mb-2">Products</h1>
+          <p class="mm-section-subtitle mb-0">
+            Subscribe with your preferred quantity and frequency. Preview monthly cost instantly.
+          </p>
+        </div>
+        <a class="btn mm-btn-secondary" href="dashboard.html">Go to dashboard</a>
+      </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+      <div id="mm-products" class="row g-3"></div>
+      <div id="mm-products-loading" class="text-muted">Loading products…</div>
+      <div id="mm-products-empty" class="text-muted d-none">
+        No products found. Add products from the admin panel.
+      </div>
+    </main>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <div class="modal fade" id="mmSubModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <div>
+              <div class="fw-bold" id="mmSubTitle">Start subscription</div>
+              <div class="text-muted" style="font-size: 13px" id="mmSubMeta"></div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="mmSubAlert" class="alert d-none" role="alert"></div>
+            <form id="mmSubForm">
+              <input type="hidden" name="product_id" />
+              <div class="row g-3">
+                <div class="col-6">
+                  <label class="form-label">Quantity</label>
+                  <input name="quantity" type="number" min="1" class="form-control mm-input" value="1" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label">Frequency</label>
+                  <select name="frequency" class="form-select mm-input">
+                    <option value="daily" selected>Daily</option>
+                    <option value="alternate">Alternate</option>
+                    <option value="weekly">Weekly</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Start date</label>
+                  <input name="start_date" type="date" class="form-control mm-input" />
+                </div>
+              </div>
+              <div class="mm-card p-3 mt-3">
+                <div class="d-flex justify-content-between">
+                  <div class="text-muted">Estimated monthly cost</div>
+                  <div class="fw-bold" id="mmSubEstimate">—</div>
+                </div>
+                <div class="text-muted mt-1" style="font-size: 13px" id="mmSubBreakdown"></div>
+              </div>
+              <button class="btn mm-btn-primary w-100 mt-3" type="submit">Confirm subscription</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
-</head>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+      const accountLink = document.getElementById("mm-account-link");
+      const logoutBtn = document.getElementById("mm-logout");
 
-<body ng-controller="ctrl">
+      function setLoggedIn(isLoggedIn) {
+        if (isLoggedIn) {
+          accountLink.textContent = "Dashboard";
+          accountLink.href = "dashboard.html";
+          logoutBtn.classList.remove("d-none");
+        } else {
+          accountLink.textContent = "Login";
+          accountLink.href = "login.html";
+          logoutBtn.classList.add("d-none");
+        }
+      }
 
-<div class="container mt-5">
+      logoutBtn.addEventListener("click", async () => {
+        await window.MilkMan.auth.logout();
+        setLoggedIn(false);
+      });
 
-<h2>Our Products</h2>
+      (async () => {
+        try {
+          await window.MilkMan.auth.me();
+          setLoggedIn(true);
+        } catch {
+          setLoggedIn(false);
+        }
+      })();
 
-<div class="row">
+      const productsEl = document.getElementById("mm-products");
+      const loadingEl = document.getElementById("mm-products-loading");
+      const emptyEl = document.getElementById("mm-products-empty");
 
-<div class="col-md-3" ng-repeat="p in products">
+      const modalEl = document.getElementById("mmSubModal");
+      const modal = new bootstrap.Modal(modalEl);
+      const form = document.getElementById("mmSubForm");
+      const alertBox = document.getElementById("mmSubAlert");
+      const estimateEl = document.getElementById("mmSubEstimate");
+      const breakdownEl = document.getElementById("mmSubBreakdown");
 
-<div class="card p-3">
+      function showAlert(type, message) {
+        alertBox.className = "alert";
+        alertBox.classList.add(type === "success" ? "alert-success" : "alert-danger");
+        alertBox.textContent = message;
+        alertBox.classList.remove("d-none");
+      }
 
-<h5>{{p.name}}</h5>
-<p>₹ {{p.price}}</p>
+      function hideAlert() {
+        alertBox.classList.add("d-none");
+      }
 
-<button class="btn btn-success">
-Subscribe
-</button>
+      function setTodayAsDefaultStart() {
+        const start = form.querySelector("[name=start_date]");
+        if (!start.value) {
+          const today = new Date();
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, "0");
+          const dd = String(today.getDate()).padStart(2, "0");
+          start.value = `${yyyy}-${mm}-${dd}`;
+        }
+      }
 
-</div>
+      async function requireLogin() {
+        try {
+          await window.MilkMan.auth.me();
+          return true;
+        } catch {
+          sessionStorage.setItem("mm_next", window.location.href);
+          window.location.href = "login.html";
+          return false;
+        }
+      }
 
-</div>
+      async function refreshEstimate() {
+        const productId = form.querySelector("[name=product_id]").value;
+        const quantity = form.querySelector("[name=quantity]").value || 1;
+        const frequency = form.querySelector("[name=frequency]").value || "daily";
+        try {
+          const preview = await window.MilkMan.apiFetch(
+            `/api/subscriptions/preview?product_id=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(
+              quantity
+            )}&frequency=${encodeURIComponent(frequency)}`
+          );
+          estimateEl.textContent = `₹ ${preview.estimated_monthly_total}`;
+          breakdownEl.textContent = `${preview.deliveries_per_month} deliveries/month • ₹ ${preview.unit_price} per unit`;
+        } catch {
+          estimateEl.textContent = "—";
+          breakdownEl.textContent = "";
+        }
+      }
 
-</div>
+      async function openSubscribe(product) {
+        const ok = await requireLogin();
+        if (!ok) return;
+        hideAlert();
+        form.reset();
+        form.querySelector("[name=product_id]").value = product.id;
+        document.getElementById("mmSubTitle").textContent = `Subscribe: ${product.name}`;
+        document.getElementById("mmSubMeta").textContent = `${product.size || ""} • ₹ ${product.price}`;
+        setTodayAsDefaultStart();
+        await refreshEstimate();
+        modal.show();
+      }
 
-</div>
+      form.addEventListener("input", () => refreshEstimate());
 
-<script>
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        hideAlert();
+        const fd = new FormData(form);
+        const payload = Object.fromEntries(fd.entries());
+        payload.quantity = Number(payload.quantity || 1);
+        try {
+          await window.MilkMan.apiFetch("/api/subscriptions/", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          showAlert("success", "Subscription created successfully");
+          setTimeout(() => window.location.replace("dashboard.html"), 700);
+        } catch (err) {
+          showAlert("error", err.message || "Subscription failed");
+        }
+      });
 
-angular.module("app",[])
-
-.controller("ctrl",function($scope,$http){
-
-$http.get("http://localhost:5000/products")
-
-.then(res=>{
-$scope.products=res.data
-})
-
-})
-
-</script>
-
-</body>
+      (async () => {
+        try {
+          const products = await window.MilkMan.apiFetch("/api/products/");
+          loadingEl.classList.add("d-none");
+          if (!products || !products.length) {
+            emptyEl.classList.remove("d-none");
+            return;
+          }
+          products.forEach((p) => {
+            const col = document.createElement("div");
+            col.className = "col-12 col-sm-6 col-lg-4";
+            col.innerHTML = `
+              <div class="mm-card p-4 h-100 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                  <div>
+                    <div class="fw-bold" style="font-size:18px">${p.name}</div>
+                    <div class="text-muted" style="font-size:13px">${p.size || ""}</div>
+                  </div>
+                  <div class="fw-bold">₹ ${p.price}</div>
+                </div>
+                <div class="text-muted mt-2" style="line-height:1.6">${p.description || ""}</div>
+                <div class="mt-auto pt-3">
+                  <button class="btn mm-btn-primary w-100" type="button">Subscribe</button>
+                </div>
+              </div>
+            `;
+            col.querySelector("button").addEventListener("click", () => openSubscribe(p));
+            productsEl.appendChild(col);
+          });
+        } catch (err) {
+          loadingEl.classList.add("d-none");
+          emptyEl.classList.remove("d-none");
+        }
+      })();
+    </script>
+  </body>
 </html>

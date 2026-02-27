@@ -11,19 +11,29 @@
 <option value="">Select Category</option>
 </select>
 
-<select class="form-control mb-2" ng-model="size">
-<option>0.5L</option>
-<option>1L</option>
-<option>2L</option>
+<input class="form-control mb-2" placeholder="Size (e.g., 500, 1, 200g)" ng-model="size">
+
+<select class="form-control mb-2" ng-model="unit"
+        ng-options="u for u in units">
+<option value="">Select Unit</option>
 </select>
 
 <input class="form-control mb-2" placeholder="Price" ng-model="price">
 <input class="form-control mb-2" placeholder="Stock" ng-model="stock">
 
-<button class="btn btn-primary" ng-click="add()">Add Product</button>
+<div class="form-check mb-2">
+  <input class="form-check-input" type="checkbox" id="activeCheck" ng-model="is_active" ng-init="is_active=true">
+  <label class="form-check-label" for="activeCheck">Active product</label>
+</div>
+
+<button class="btn btn-primary" ng-click="add()">Save Product</button>
 
 </div>
 
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <input class="form-control" style="max-width:280px" placeholder="Search products" ng-model="search">
+  <small class="text-muted">Showing {{(filtered()||[]).length}} items</small>
+  </div>
 
 <table class="table table-bordered">
 
@@ -32,19 +42,27 @@
 <th>Name</th>
 <th>Category</th>
 <th>Size</th>
+<th>Unit</th>
 <th>Price</th>
 <th>Stock</th>
+<th>Status</th>
 <th>Action</th>
 </tr>
 
-<tr ng-repeat="p in products">
+<tr ng-repeat="p in filtered()">
 
 <td>{{p.id}}</td>
 <td>{{p.name}}</td>
 <td>{{categoryMap[p.category_id]}}</td>
 <td>{{p.size}}</td>
+<td>{{p.unit}}</td>
 <td>{{p.price}}</td>
 <td>{{p.stock}}</td>
+<td>
+  <span class="badge" ng-class="{'bg-success': p.is_active, 'bg-secondary': !p.is_active}">
+    {{p.is_active ? 'Active' : 'Inactive'}}
+  </span>
+</td>
 
 <td>
 

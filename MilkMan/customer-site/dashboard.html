@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MilkMan — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="mm-page mm-dashboard-bg">
+    <nav class="navbar navbar-expand-lg mm-nav sticky-top">
+      <div class="container">
+        <a class="navbar-brand mm-brand" href="index.html">MilkMan</a>
+        <div class="ms-auto d-flex gap-2 align-items-center">
+          <a class="btn btn-sm mm-btn-secondary" href="products.html">Products</a>
+          <button id="mm-logout" class="btn btn-sm btn-outline-danger" type="button">
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-5">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div class="mm-fade-in">
+          <h1 class="mm-section-title mb-2">Your dashboard</h1>
+          <div id="mm-welcome" class="text-muted">Loading…</div>
+        </div>
+        <div class="mm-fade-in d-flex gap-2">
+          <a class="btn mm-btn-secondary" href="products.html">Start new subscription</a>
+          <button class="btn mm-btn-secondary" id="mm-edit-profile" type="button">
+            Edit profile
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-3">
+        <div class="col-md-6 col-lg-4">
+          <div class="mm-card p-4 h-100">
+            <div class="fw-bold">Active subscriptions</div>
+            <div id="mm-stat-active" class="display-6 mt-2">—</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mm-card p-4 h-100">
+            <div class="fw-bold">Upcoming deliveries</div>
+            <div id="mm-stat-upcoming" class="display-6 mt-2">—</div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="mm-card p-4 h-100">
+            <div class="fw-bold">Orders placed</div>
+            <div id="mm-stat-orders" class="display-6 mt-2">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-1">
+        <div class="col-lg-8">
+          <div class="mm-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="fw-bold">Subscriptions</div>
+              <a class="mm-link" href="products.html">Add subscription</a>
+            </div>
+            <div id="mm-subs-loading" class="text-muted">Loading subscriptions…</div>
+            <div id="mm-subs-empty" class="text-muted d-none">
+              No subscriptions yet. Start one from the products page.
+            </div>
+            <div id="mm-subs-list" class="d-grid gap-2"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="mm-card p-4 h-100">
+            <div class="fw-bold mb-3">Profile</div>
+            <div class="d-grid gap-2">
+              <div class="d-flex justify-content-between">
+                <div class="text-muted">Name</div>
+                <div id="mm-profile-name" class="fw-semibold">—</div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div class="text-muted">Email</div>
+                <div id="mm-profile-email" class="fw-semibold">—</div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div class="text-muted">Phone</div>
+                <div id="mm-profile-phone" class="fw-semibold">—</div>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div class="text-muted">Address</div>
+                <div id="mm-profile-address" class="fw-semibold text-end" style="max-width: 60%">
+                  —
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button class="btn mm-btn-primary w-100" id="mm-profile-cta" type="button">
+                Manage subscriptions
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-1">
+        <div class="col-lg-6">
+          <div class="mm-card p-4">
+            <div class="fw-bold mb-3">Upcoming deliveries</div>
+            <div id="mm-deliveries-empty" class="text-muted d-none">No upcoming deliveries.</div>
+            <div id="mm-deliveries" class="d-grid gap-2"></div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mm-card p-4">
+            <div class="fw-bold mb-3">Order history</div>
+            <div id="mm-orders-empty" class="text-muted d-none">No orders yet.</div>
+            <div id="mm-orders-list" class="d-grid gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal fade" id="mmProfileModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <div class="fw-bold">Edit profile</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="mm-profile-alert" class="alert d-none" role="alert"></div>
+            <form id="mm-profile-form">
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input name="name" class="form-control mm-input" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input name="phone" class="form-control mm-input" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Address</label>
+                <textarea name="address" rows="2" class="form-control mm-input"></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">New password (optional)</label>
+                <input name="password" type="password" class="form-control mm-input" />
+              </div>
+              <button class="btn mm-btn-primary w-100 mt-2" type="submit">Save changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+      const logoutBtn = document.getElementById("mm-logout");
+      const editBtn = document.getElementById("mm-edit-profile");
+      const profileCta = document.getElementById("mm-profile-cta");
+
+      const profileModalEl = document.getElementById("mmProfileModal");
+      const profileModal = new bootstrap.Modal(profileModalEl);
+      const profileForm = document.getElementById("mm-profile-form");
+      const profileAlert = document.getElementById("mm-profile-alert");
+
+      logoutBtn.addEventListener("click", async () => {
+        await window.MilkMan.auth.logout();
+        window.location.replace("login.html");
+      });
+
+      profileCta.addEventListener("click", () => window.location.assign("products.html"));
+      editBtn.addEventListener("click", () => profileModal.show());
+
+      function showProfileAlert(type, message) {
+        profileAlert.className = "alert";
+        profileAlert.classList.add(type === "success" ? "alert-success" : "alert-danger");
+        profileAlert.textContent = message;
+        profileAlert.classList.remove("d-none");
+      }
+
+      function hideProfileAlert() {
+        profileAlert.classList.add("d-none");
+      }
+
+      function subRow(sub) {
+        const status = sub.status || "active";
+        const pill =
+          status === "active"
+            ? "mm-pill"
+            : status === "paused"
+              ? "mm-pill"
+              : "mm-pill";
+
+        const next = sub.next_delivery_date ? sub.next_delivery_date : "—";
+        const productName = (sub.product && sub.product.name) || `Product #${sub.product_id}`;
+        const meta = `${sub.frequency} • Qty ${sub.quantity} • Next: ${next}`;
+
+        const disabledAttr = status === "canceled" ? "disabled" : "";
+
+        const pauseResume =
+          status === "paused"
+            ? `<button class="btn btn-sm mm-btn-secondary" ${disabledAttr} data-action="resume">Resume</button>`
+            : `<button class="btn btn-sm mm-btn-secondary" ${disabledAttr} data-action="pause">Pause</button>`;
+
+        const cancel = `<button class="btn btn-sm btn-outline-danger" ${disabledAttr} data-action="cancel">Cancel</button>`;
+
+        return `
+          <div class="mm-card p-3">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+              <div>
+                <div class="fw-bold">${productName}</div>
+                <div class="text-muted" style="font-size:13px">${meta}</div>
+              </div>
+              <div class="d-flex gap-2 align-items-center">
+                <span class="${pill}" style="padding:6px 10px">${status}</span>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm mm-btn-secondary" ${disabledAttr} data-action="details">Details</button>
+                  ${pauseResume}
+                  ${cancel}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      (async () => {
+        try {
+          const me = await window.MilkMan.auth.me();
+          document.getElementById("mm-welcome").textContent = `Welcome back, ${me.name}`;
+
+          document.getElementById("mm-profile-name").textContent = me.name || "—";
+          document.getElementById("mm-profile-email").textContent = me.email || "—";
+          document.getElementById("mm-profile-phone").textContent = me.phone || "—";
+          document.getElementById("mm-profile-address").textContent = me.address || "—";
+
+          profileForm.name.value = me.name || "";
+          profileForm.phone.value = me.phone || "";
+          profileForm.address.value = me.address || "";
+
+          const [subs, orders, products] = await Promise.all([
+            window.MilkMan.apiFetch("/api/subscriptions/my").catch(() => []),
+            window.MilkMan.apiFetch("/api/orders/my").catch(() => []),
+            window.MilkMan.apiFetch("/api/products/").catch(() => []),
+          ]);
+
+          const productMap = {};
+          (products || []).forEach((p) => (productMap[p.id] = p));
+
+          const activeSubs = (subs || []).filter((s) => (s.status || "active") === "active");
+          document.getElementById("mm-stat-active").textContent = activeSubs.length;
+          document.getElementById("mm-stat-upcoming").textContent = (activeSubs || []).filter(
+            (s) => s.next_delivery_date
+          ).length;
+          document.getElementById("mm-stat-orders").textContent = (orders || []).length;
+
+          const subsLoading = document.getElementById("mm-subs-loading");
+          const subsEmpty = document.getElementById("mm-subs-empty");
+          const subsList = document.getElementById("mm-subs-list");
+          subsLoading.classList.add("d-none");
+
+          if (!subs || !subs.length) {
+            subsEmpty.classList.remove("d-none");
+          } else {
+            subs.forEach((s) => {
+              if (!s.product && productMap[s.product_id]) s.product = productMap[s.product_id];
+              const wrapper = document.createElement("div");
+              wrapper.innerHTML = subRow(s);
+              const row = wrapper.firstElementChild;
+              row.querySelectorAll("[data-action]").forEach((btn) => {
+                btn.addEventListener("click", async () => {
+                  const action = btn.dataset.action;
+                  if (s.status === "canceled") return;
+                  try {
+                    if (action === "pause") {
+                      await window.MilkMan.apiFetch(`/api/subscriptions/${s.id}/pause`, {
+                        method: "POST",
+                        body: JSON.stringify({}),
+                      });
+                      window.location.reload();
+                    } else if (action === "resume") {
+                      await window.MilkMan.apiFetch(`/api/subscriptions/${s.id}/resume`, {
+                        method: "POST",
+                        body: JSON.stringify({}),
+                      });
+                      window.location.reload();
+                    } else if (action === "cancel") {
+                      await window.MilkMan.apiFetch(`/api/subscriptions/${s.id}/cancel`, {
+                        method: "POST",
+                        body: JSON.stringify({}),
+                      });
+                      window.location.reload();
+                    } else if (action === "details") {
+                      window.location.assign("products.html");
+                    }
+                  } catch (err) {}
+                });
+              });
+              subsList.appendChild(row);
+            });
+          }
+
+          const deliveriesEl = document.getElementById("mm-deliveries");
+          const deliveriesEmpty = document.getElementById("mm-deliveries-empty");
+          const upcoming = (subs || [])
+            .filter((s) => s.status === "active" && s.next_delivery_date)
+            .sort((a, b) => (a.next_delivery_date || "").localeCompare(b.next_delivery_date || ""))
+            .slice(0, 6);
+          if (!upcoming.length) {
+            deliveriesEmpty.classList.remove("d-none");
+          } else {
+            upcoming.forEach((s) => {
+              const productName = (s.product && s.product.name) || `Product #${s.product_id}`;
+              const el = document.createElement("div");
+              el.className = "mm-card p-3";
+              el.innerHTML = `
+                <div class="d-flex justify-content-between gap-3 flex-wrap">
+                  <div>
+                    <div class="fw-bold">${productName}</div>
+                    <div class="text-muted" style="font-size:13px">${s.frequency} • Qty ${s.quantity}</div>
+                  </div>
+                  <div class="fw-bold">${s.next_delivery_date}</div>
+                </div>
+              `;
+              deliveriesEl.appendChild(el);
+            });
+          }
+
+          const ordersEl = document.getElementById("mm-orders-list");
+          const ordersEmpty = document.getElementById("mm-orders-empty");
+          const recentOrders = (orders || []).slice().reverse().slice(0, 6);
+          if (!recentOrders.length) {
+            ordersEmpty.classList.remove("d-none");
+          } else {
+            recentOrders.forEach((o) => {
+              const productName = (productMap[o.product_id] && productMap[o.product_id].name) || `Product #${o.product_id}`;
+              const el = document.createElement("div");
+              el.className = "mm-card p-3";
+              el.innerHTML = `
+                <div class="d-flex justify-content-between gap-3 flex-wrap">
+                  <div>
+                    <div class="fw-bold">${productName}</div>
+                    <div class="text-muted" style="font-size:13px">${o.status || "pending"} • Qty ${o.quantity}</div>
+                  </div>
+                  <div class="fw-bold">₹ ${o.total_price || 0}</div>
+                </div>
+              `;
+              ordersEl.appendChild(el);
+            });
+          }
+
+          profileForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideProfileAlert();
+            const fd = new FormData(profileForm);
+            const payload = Object.fromEntries(fd.entries());
+            if (!payload.password) delete payload.password;
+            try {
+              const updated = await window.MilkMan.apiFetch("/api/customers/me", {
+                method: "PUT",
+                body: JSON.stringify(payload),
+              });
+              showProfileAlert("success", "Profile updated");
+              document.getElementById("mm-profile-name").textContent = updated.name || "—";
+              document.getElementById("mm-profile-phone").textContent = updated.phone || "—";
+              document.getElementById("mm-profile-address").textContent = updated.address || "—";
+              profileModal.hide();
+            } catch (err) {
+              showProfileAlert("error", err.message || "Update failed");
+            }
+          });
+        } catch (err) {
+          window.location.replace("login.html");
+        }
+      })();
+    </script>
+  </body>
+</html>

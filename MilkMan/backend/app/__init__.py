@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from sqlalchemy import text
 import config
 
 db = SQLAlchemy()
@@ -13,9 +14,76 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
 
-    CORS(app)
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": config.CORS_ORIGINS}},
+        supports_credentials=True,
+    )
     db.init_app(app)
     jwt.init_app(app)
+
+    with app.app_context():
+        if db.engine.dialect.name == "sqlite":
+            conn = db.engine.connect()
+            try:
+                existing = {
+                    row[1]
+                    for row in conn.execute(text("PRAGMA table_info(subscription)")).fetchall()
+                }
+                if existing:
+                    alters = []
+                    if "frequency" not in existing:
+                        alters.append(
+                            "ALTER TABLE subscription ADD COLUMN frequency VARCHAR(20) DEFAULT 'daily'"
+                        )
+                    if "status" not in existing:
+                        alters.append(
+                            "ALTER TABLE subscription ADD COLUMN status VARCHAR(20) DEFAULT 'active'"
+                        )
+                    if "paused_until" not in existing:
+                        alters.append("ALTER TABLE subscription ADD COLUMN paused_until DATE")
+                    if "canceled_at" not in existing:
+                        alters.append("ALTER TABLE subscription ADD COLUMN canceled_at DATETIME")
+                    if "unit_price" not in existing:
+                        alters.append("ALTER TABLE subscription ADD COLUMN unit_price FLOAT")
+                    if "updated_at" not in existing:
+                        alters.append("ALTER TABLE subscription ADD COLUMN updated_at DATETIME")
+                    for stmt in alters:
+                        conn.execute(text(stmt))
+                    if alters:
+                        conn.commit()
+
+                prod_cols = {
+                    row[1]
+                    for row in conn.execute(text("PRAGMA table_info(product)")).fetchall()
+                }
+                if prod_cols:
+                    p_alters = []
+                    if "unit" not in prod_cols:
+                        p_alters.append("ALTER TABLE product ADD COLUMN unit VARCHAR(20) DEFAULT 'custom'")
+                    if "is_active" not in prod_cols:
+                        p_alters.append("ALTER TABLE product ADD COLUMN is_active BOOLEAN DEFAULT 1")
+                    if "size" in prod_cols:
+                        # SQLite cannot alter column type; keep existing 'size' col and accept longer values by app-level
+                        pass
+                    for stmt in p_alters:
+                        conn.execute(text(stmt))
+                    if p_alters:
+                        conn.commit()
+            finally:
+                conn.close()
+
+    @jwt.unauthorized_loader
+    def _unauthorized(reason):
+        return jsonify({"error": "Authentication required"}), 401
+
+    @jwt.invalid_token_loader
+    def _invalid_token(reason):
+        return jsonify({"error": "Invalid authentication token"}), 401
+
+    @jwt.expired_token_loader
+    def _expired_token(jwt_header, jwt_payload):
+        return jsonify({"error": "Authentication token expired"}), 401
 
     # -------- REGISTER ROUTES --------
 
