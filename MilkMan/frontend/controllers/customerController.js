@@ -1,103 +1,66 @@
-app.controller("CustomerController", function($scope,$http){
+app.controller("CustomerController", function ($scope, $http) {
+  $scope.editId = null;
 
-$scope.editId=null;
+  function resetForm() {
+    $scope.editId = null;
+    $scope.name = "";
+    $scope.email = "";
+    $scope.password = "";
+    $scope.phone = "";
+    $scope.address = "";
+  }
 
-function load(){
+  function load() {
+    $http.get("http://127.0.0.1:5000/api/customers/").then(function (res) {
+      $scope.customers = res.data.data || res.data;
+    });
+  }
 
-$http.get("http://127.0.0.1:5000/api/customers/")
-.then(function(res){
+  $scope.resetForm = resetForm;
 
-$scope.customers=res.data.data || res.data;
+  load();
 
-});
+  $scope.addCustomer = function () {
+    var payload = {
+      name: $scope.name,
+      email: $scope.email,
+      password: $scope.password,
+      phone: $scope.phone,
+      address: $scope.address,
+    };
 
-}
+    if ($scope.editId) {
+      $http
+        .put("http://127.0.0.1:5000/api/customers/" + $scope.editId, payload)
+        .then(function () {
+          alert("Customer updated");
+          resetForm();
+          load();
+        });
+    } else {
+      $http.post("http://127.0.0.1:5000/api/customers/", payload).then(function () {
+        alert("Customer added");
+        resetForm();
+        load();
+      });
+    }
+  };
 
-load();
+  $scope.remove = function (id) {
+    if (!confirm("Delete this customer?")) return;
 
+    $http.delete("http://127.0.0.1:5000/api/customers/" + id).then(function () {
+      alert("Customer deleted");
+      load();
+    });
+  };
 
-// ADD / UPDATE
-$scope.addCustomer=function(){
-
-if($scope.editId){
-
-$http.put(
-"http://127.0.0.1:5000/api/customers/"+$scope.editId,
-{
-name:$scope.name,
-email:$scope.email,
-password:$scope.password
-}
-)
-
-.then(function(){
-
-alert("Updated");
-
-$scope.editId=null;
-$scope.name="";
-$scope.email="";
-$scope.password="";
-
-load();
-
-});
-
-}
-
-else{
-
-$http.post(
-"http://127.0.0.1:5000/api/customers/",
-{
-name:$scope.name,
-email:$scope.email,
-password:$scope.password
-}
-)
-
-.then(function(){
-
-alert("Added");
-
-$scope.name="";
-$scope.email="";
-$scope.password="";
-
-load();
-
-});
-
-}
-
-};
-
-
-// DELETE
-$scope.remove=function(id){
-
-if(!confirm("Delete this customer?")) return;
-
-$http.delete("http://127.0.0.1:5000/api/customers/"+id)
-
-.then(function(){
-
-alert("Deleted");
-load();
-
-});
-
-};
-
-
-// EDIT
-$scope.edit=function(c){
-
-$scope.editId=c.id;
-
-$scope.name=c.name;
-$scope.email=c.email;
-
-};
-
+  $scope.edit = function (customer) {
+    $scope.editId = customer.id;
+    $scope.name = customer.name;
+    $scope.email = customer.email;
+    $scope.phone = customer.phone;
+    $scope.address = customer.address;
+    $scope.password = "";
+  };
 });

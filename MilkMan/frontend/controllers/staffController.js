@@ -1,106 +1,64 @@
-app.controller("StaffController", function($scope,$http){
+app.controller("StaffController", function ($scope, $http) {
+  $scope.editId = null;
 
-$scope.editId=null;
+  function resetForm() {
+    $scope.editId = null;
+    $scope.name = "";
+    $scope.email = "";
+    $scope.password = "";
+    $scope.phone = "";
+    $scope.role = "";
+  }
 
-function load(){
+  function load() {
+    $http.get("http://127.0.0.1:5000/api/staff/").then(function (res) {
+      $scope.staff = res.data;
+    });
+  }
 
-$http.get("http://127.0.0.1:5000/api/staff/")
-.then(function(res){
-$scope.staff=res.data;
-});
+  $scope.resetForm = resetForm;
 
-}
+  load();
 
-load();
+  $scope.add = function () {
+    var payload = {
+      name: $scope.name,
+      email: $scope.email,
+      password: $scope.password,
+      phone: $scope.phone,
+      role: $scope.role,
+    };
 
+    if ($scope.editId) {
+      $http.put("http://127.0.0.1:5000/api/staff/" + $scope.editId, payload).then(function () {
+        alert("Staff updated");
+        resetForm();
+        load();
+      });
+    } else {
+      $http.post("http://127.0.0.1:5000/api/staff/", payload).then(function () {
+        alert("Staff added");
+        resetForm();
+        load();
+      });
+    }
+  };
 
-// ADD OR UPDATE
-$scope.add=function(){
+  $scope.remove = function (id) {
+    if (!confirm("Delete this staff member?")) return;
 
-if($scope.editId){
+    $http.delete("http://127.0.0.1:5000/api/staff/" + id).then(function () {
+      alert("Staff deleted");
+      load();
+    });
+  };
 
-$http.put(
-"http://127.0.0.1:5000/api/staff/"+$scope.editId,
-{
-name:$scope.name,
-email:$scope.email,
-password:$scope.password,
-role:$scope.role
-}
-)
-
-.then(function(){
-
-alert("Updated");
-
-$scope.editId=null;
-$scope.name="";
-$scope.email="";
-$scope.password="";
-$scope.role="";
-
-load();
-
-});
-
-}
-
-else{
-
-$http.post(
-"http://127.0.0.1:5000/api/staff/",
-{
-name:$scope.name,
-email:$scope.email,
-password:$scope.password,
-role:$scope.role
-}
-)
-
-.then(function(){
-
-alert("Added");
-
-$scope.name="";
-$scope.email="";
-$scope.password="";
-$scope.role="";
-
-load();
-
-});
-
-}
-
-};
-
-
-// DELETE
-$scope.remove=function(id){
-
-if(!confirm("Delete this staff?")) return;
-
-$http.delete("http://127.0.0.1:5000/api/staff/"+id)
-
-.then(function(){
-
-alert("Deleted");
-load();
-
-});
-
-};
-
-
-// EDIT
-$scope.edit=function(s){
-
-$scope.editId=s.id;
-
-$scope.name=s.name;
-$scope.email=s.email;
-$scope.role=s.role;
-
-};
-
+  $scope.edit = function (staff) {
+    $scope.editId = staff.id;
+    $scope.name = staff.name;
+    $scope.email = staff.email;
+    $scope.phone = staff.phone;
+    $scope.role = staff.role;
+    $scope.password = "";
+  };
 });

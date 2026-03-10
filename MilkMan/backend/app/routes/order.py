@@ -100,8 +100,40 @@ def update_order(id):
     order = Order.query.get_or_404(id)
     data = request.get_json() or {}
 
+    if data.get("customer_id") is not None:
+        customer = Customer.query.get(data["customer_id"])
+        if not customer:
+            return jsonify({"error": "Customer not found"}), 404
+        order.customer_id = customer.id
+
+    if data.get("product_id") is not None:
+        product = Product.query.get(data["product_id"])
+        if not product:
+            return jsonify({"error": "Product not found"}), 404
+        order.product_id = product.id
+
+    if data.get("quantity") is not None:
+        try:
+            quantity = int(data.get("quantity") or 1)
+        except Exception:
+            return jsonify({"error": "quantity must be a number"}), 400
+        if quantity < 1:
+            return jsonify({"error": "quantity must be at least 1"}), 400
+        order.quantity = quantity
+
+    if data.get("size") is not None:
+        size = (data.get("size") or "").strip()
+        if not size:
+            return jsonify({"error": "size is required"}), 400
+        order.size = size
+
     if data.get("status"):
         order.status = data["status"]
+
+    product = Product.query.get(order.product_id)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+    order.total_price = product.price * order.quantity
 
     db.session.commit()
 

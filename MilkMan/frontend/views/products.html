@@ -1,85 +1,153 @@
-<div class="container">
-
-<h3 class="mb-4">Products</h3>
-
-<div class="card p-3 mb-4">
-
-<input class="form-control mb-2" placeholder="Name" ng-model="name">
-
-<select class="form-control mb-2" ng-model="category_id"
-        ng-options="c.id as c.name for c in categories">
-<option value="">Select Category</option>
-</select>
-
-<input class="form-control mb-2" placeholder="Size (e.g., 500, 1, 200g)" ng-model="size">
-
-<select class="form-control mb-2" ng-model="unit"
-        ng-options="u for u in units">
-<option value="">Select Unit</option>
-</select>
-
-<input class="form-control mb-2" placeholder="Price" ng-model="price">
-<input class="form-control mb-2" placeholder="Stock" ng-model="stock">
-
-<div class="form-check mb-2">
-  <input class="form-check-input" type="checkbox" id="activeCheck" ng-model="is_active" ng-init="is_active=true">
-  <label class="form-check-label" for="activeCheck">Active product</label>
-</div>
-
-<button class="btn btn-primary" ng-click="add()">Save Product</button>
-
-</div>
-
-<div class="d-flex justify-content-between align-items-center mb-2">
-  <input class="form-control" style="max-width:280px" placeholder="Search products" ng-model="search">
-  <small class="text-muted">Showing {{(filtered()||[]).length}} items</small>
+<section class="admin-view">
+  <div class="admin-section-header">
+    <div>
+      <div class="admin-section-kicker">
+        <i class="bi bi-box-seam-fill"></i>
+        <span>Inventory control</span>
+      </div>
+      <h2>Manage products and stock</h2>
+      <p>Keep the catalog ready for both staff operations and customer subscriptions with clear sizing, pricing, and availability.</p>
+    </div>
   </div>
 
-<table class="table table-bordered">
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>{{editId ? 'Edit product' : 'Add product'}}</h3>
+            <p>{{editId ? 'Update pricing, stock, unit, or activation state for this product.' : 'Create a new sellable item for orders and subscriptions.'}}</p>
+          </div>
+          <div class="admin-chip">
+            <i class="bi" ng-class="editId ? 'bi-pencil-square' : 'bi-plus-square-fill'"></i>
+            <span>{{editId ? 'Update mode' : 'Create mode'}}</span>
+          </div>
+        </div>
+        <div class="admin-panel-body">
+          <div class="admin-form-grid">
+            <div>
+              <label class="form-label">Product name</label>
+              <input class="form-control admin-input" ng-model="name" placeholder="Full Cream Milk">
+            </div>
+            <div>
+              <label class="form-label">Category</label>
+              <select class="form-select admin-select" ng-model="category_id" ng-options="c.id as c.name for c in categories">
+                <option value="">Select category</option>
+              </select>
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Size</label>
+                <input class="form-control admin-input" ng-model="size" placeholder="500, 1, 250">
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Unit</label>
+                <select class="form-select admin-select" ng-model="unit" ng-options="u for u in units">
+                  <option value="">Select unit</option>
+                </select>
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Price</label>
+                <input class="form-control admin-input" type="number" ng-model="price" placeholder="72">
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Stock</label>
+                <input class="form-control admin-input" type="number" ng-model="stock" placeholder="120">
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Description</label>
+              <textarea class="form-control admin-input" rows="3" ng-model="description" placeholder="Short product description for the catalog"></textarea>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="activeCheck" ng-model="is_active">
+              <label class="form-check-label" for="activeCheck">Product is active and available for customers</label>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn admin-primary-btn" ng-click="add()">
+                <i class="bi" ng-class="editId ? 'bi-check2-circle' : 'bi-box-seam-fill'"></i>
+                <span>{{editId ? 'Update product' : 'Save product'}}</span>
+              </button>
+              <button class="btn admin-secondary-btn" ng-click="resetForm()" ng-if="editId">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear form</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Category</th>
-<th>Size</th>
-<th>Unit</th>
-<th>Price</th>
-<th>Stock</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
+    <div class="col-xl-8">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>Product catalog</h3>
+            <p>Search the catalog, review stock at a glance, and update items without leaving this view.</p>
+          </div>
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="bi bi-search"></i>
+              <input class="form-control admin-input" ng-model="search" placeholder="Search by product name, category, or unit">
+            </div>
+            <div class="admin-chip">
+              <i class="bi bi-boxes"></i>
+              <span>{{(filtered() || []).length}} visible</span>
+            </div>
+          </div>
+        </div>
 
-<tr ng-repeat="p in filtered()">
-
-<td>{{p.id}}</td>
-<td>{{p.name}}</td>
-<td>{{categoryMap[p.category_id]}}</td>
-<td>{{p.size}}</td>
-<td>{{p.unit}}</td>
-<td>{{p.price}}</td>
-<td>{{p.stock}}</td>
-<td>
-  <span class="badge" ng-class="{'bg-success': p.is_active, 'bg-secondary': !p.is_active}">
-    {{p.is_active ? 'Active' : 'Inactive'}}
-  </span>
-</td>
-
-<td>
-
-<button class="btn btn-warning btn-sm me-1"
-        ng-click="edit(p)">
-Edit
-</button>
-
-<button class="btn btn-danger btn-sm"
-        ng-click="remove(p.id)">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-</table>
-
-</div>
+        <div class="admin-table-wrap">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Pricing</th>
+                <th>Availability</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="p in filtered()">
+                <td>
+                  <span class="admin-table-primary">{{p.name}}</span>
+                  <span class="admin-table-secondary">{{p.size}} {{p.unit}}<span ng-if="p.description"> | {{p.description}}</span></span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{categoryMap[p.category_id] || 'Unknown category'}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">&#8377; {{p.price}}</span>
+                  <span class="admin-table-secondary">Stock: {{p.stock || 0}}</span>
+                </td>
+                <td>
+                  <span class="admin-status-badge" ng-class="p.is_active ? 'active' : 'inactive'">
+                    {{p.is_active ? 'Active' : 'Inactive'}}
+                  </span>
+                </td>
+                <td>
+                  <div class="admin-actions">
+                    <button class="btn admin-icon-btn warning" ng-click="edit(p)">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn admin-icon-btn danger" ng-click="remove(p.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="!(products || []).length">
+                <td colspan="5">
+                  <div class="admin-empty">No products available yet.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

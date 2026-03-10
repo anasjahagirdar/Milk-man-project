@@ -1,39 +1,32 @@
-app.controller("AuthController", function($scope,$http,$location,$rootScope){
+app.controller("AuthController", function ($scope, $http, $location, $rootScope) {
+  $scope.error = "";
+  $scope.isSubmitting = false;
 
-$scope.login=function(){
+  $scope.login = function () {
+    $scope.error = "";
+    $scope.isSubmitting = true;
 
-$http.post(
-"http://127.0.0.1:5000/api/auth/admin/login",
-{
-email:$scope.email,
-password:$scope.password
-}
-)
-
-.then(function(response){
-
-console.log("LOGIN RESPONSE:",response.data);
-
-// save token
-localStorage.setItem("token",response.data.token);
-
-// ⭐ IMPORTANT — mark logged in
-$rootScope.isLoggedIn=true;
-
-alert("Login success");
-
-// go to dashboard
-$location.path("/dashboard");
-
-})
-
-.catch(function(err){
-
-console.log("LOGIN ERROR:",err);
-alert("Invalid login");
-
-});
-
-};
-
+    $http
+      .post("http://127.0.0.1:5000/api/auth/admin/login", {
+        email: $scope.email,
+        password: $scope.password,
+      })
+      .then(function (response) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem(
+          "admin_name",
+          (response.data.user && response.data.user.name) || "Administrator"
+        );
+        $rootScope.isLoggedIn = true;
+        $rootScope.adminName = localStorage.getItem("admin_name");
+        $location.path("/dashboard");
+      })
+      .catch(function (err) {
+        $scope.error =
+          (err && err.data && (err.data.error || err.data.message)) || "Invalid login credentials.";
+      })
+      .finally(function () {
+        $scope.isSubmitting = false;
+      });
+  };
 });

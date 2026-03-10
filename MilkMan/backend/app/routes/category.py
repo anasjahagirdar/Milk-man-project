@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app import db
 from app.authz import require_roles
 from app.models.category import Category
+from sqlalchemy.exc import IntegrityError
 
 category_bp = Blueprint("category", __name__)
 
@@ -12,14 +13,23 @@ category_bp = Blueprint("category", __name__)
 def create_category():
 
     data = request.get_json() or {}
+    name = (data.get("name") or "").strip()
+    description = (data.get("description") or "").strip() or None
+
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
 
     category = Category(
-        name=data["name"],
-        description=data.get("description")
+        name=name,
+        description=description
     )
 
     db.session.add(category)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Category already exists"}), 409
 
     return jsonify(category.to_dict()), 201
 
@@ -51,10 +61,19 @@ def update_category(id):
 
     data = request.get_json() or {}
 
-    category.name = data.get("name", category.name)
-    category.description = data.get("description", category.description)
+    if data.get("name") is not None:
+        name = (data.get("name") or "").strip()
+        if not name:
+            return jsonify({"error": "Name is required"}), 400
+        category.name = name
+    if data.get("description") is not None:
+        category.description = (data.get("description") or "").strip() or None
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Category already exists"}), 409
 
     return jsonify(category.to_dict())
 

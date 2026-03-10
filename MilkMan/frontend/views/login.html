@@ -1,53 +1,82 @@
-<div class="login-bg">
-
-  <div class="container">
-
-    <div class="row justify-content-center align-items-center" style="min-height:100vh;">
-
-      <div class="col-md-4">
-
-        <div class="card shadow-lg border-0 rounded-4">
-
-          <div class="card-body p-4">
-
-            <h3 class="text-center mb-4 text-primary fw-bold">
-              Fresh-Dairy Login
-            </h3>
-
-            <form ng-submit="login()">
-
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email"
-                       class="form-control form-control-lg"
-                       ng-model="email"
-                       placeholder="Enter email"
-                       required>
-              </div>
-
-              <div class="mb-4">
-                <label class="form-label">Password</label>
-                <input type="password"
-                       class="form-control form-control-lg"
-                       ng-model="password"
-                       placeholder="Enter password"
-                       required>
-              </div>
-
-              <button class="btn btn-primary w-100 btn-lg">
-                Login
-              </button>
-
-            </form>
-
-          </div>
-
+<section class="admin-auth-wrap">
+  <div class="admin-auth-grid">
+    <div class="admin-auth-intro">
+      <div>
+        <div class="admin-auth-badge">
+          <i class="bi bi-stars"></i>
+          <span>MilkMan control center</span>
         </div>
-
+        <h1 class="admin-auth-title">Operate deliveries, inventory, and subscriptions from one place.</h1>
+        <p class="admin-auth-copy">
+          Secure access for your operations team. Review orders, track recurring plans, and keep your dairy catalog accurate throughout the day.
+        </p>
       </div>
 
+      <div class="admin-auth-points">
+        <div class="admin-auth-point">
+          <i class="bi bi-truck"></i>
+          <div>
+            <strong>Delivery operations</strong>
+            <span>Monitor active orders and recurring delivery plans.</span>
+          </div>
+        </div>
+        <div class="admin-auth-point">
+          <i class="bi bi-box-seam"></i>
+          <div>
+            <strong>Catalog and stock control</strong>
+            <span>Keep product sizes, units, prices, and availability aligned.</span>
+          </div>
+        </div>
+        <div class="admin-auth-point">
+          <i class="bi bi-people"></i>
+          <div>
+            <strong>Staff and customer management</strong>
+            <span>Maintain operational records without leaving the dashboard.</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-  </div>
+    <div class="admin-auth-card">
+      <div class="admin-auth-card-header">
+        <h2>Administrator sign in</h2>
+        <p>Use your admin account to open the MilkMan operations dashboard.</p>
+      </div>
 
-</div>
+      <div class="alert alert-danger admin-inline-alert" ng-if="error">
+        {{error}}
+      </div>
+
+      <form ng-submit="login()" class="admin-auth-form">
+        <div class="mb-3">
+          <label class="form-label">Email address</label>
+          <input
+            type="email"
+            class="form-control admin-input"
+            ng-model="email"
+            placeholder="admin@milkman.com"
+            required
+          >
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input
+            type="password"
+            class="form-control admin-input"
+            ng-model="password"
+            placeholder="Enter password"
+            required
+          >
+          <div class="admin-field-help">Use the updated admin password configured for this project.</div>
+        </div>
+
+        <button class="btn admin-primary-btn w-100 mt-2" type="submit" ng-disabled="isSubmitting">
+          <i class="bi bi-box-arrow-in-right"></i>
+          <span ng-if="!isSubmitting">Sign in to dashboard</span>
+          <span ng-if="isSubmitting">Signing in...</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

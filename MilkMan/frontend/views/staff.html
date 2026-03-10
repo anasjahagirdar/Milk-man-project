@@ -1,53 +1,130 @@
-<div class="container">
+<section class="admin-view">
+  <div class="admin-section-header">
+    <div>
+      <div class="admin-section-kicker">
+        <i class="bi bi-person-badge-fill"></i>
+        <span>Team administration</span>
+      </div>
+      <h2>Manage staff access</h2>
+      <p>Create operational users, update their roles, and keep the contact list ready for delivery coordination.</p>
+    </div>
+  </div>
 
-<h3 class="mb-4">Staff</h3>
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>{{editId ? 'Edit staff member' : 'Add staff member'}}</h3>
+            <p>{{editId ? 'Update role and contact information for this team member.' : 'Create a new operational account for staff access.'}}</p>
+          </div>
+          <div class="admin-chip">
+            <i class="bi" ng-class="editId ? 'bi-pencil-square' : 'bi-person-workspace'"></i>
+            <span>{{editId ? 'Update mode' : 'Create mode'}}</span>
+          </div>
+        </div>
+        <div class="admin-panel-body">
+          <div class="admin-form-grid">
+            <div>
+              <label class="form-label">Full name</label>
+              <input class="form-control admin-input" ng-model="name" placeholder="Staff member name">
+            </div>
+            <div>
+              <label class="form-label">Email address</label>
+              <input class="form-control admin-input" ng-model="email" placeholder="staff@example.com">
+            </div>
+            <div>
+              <label class="form-label">Phone number</label>
+              <input class="form-control admin-input" ng-model="phone" placeholder="+91 91234 56789">
+            </div>
+            <div>
+              <label class="form-label">Role</label>
+              <input class="form-control admin-input" ng-model="role" placeholder="Manager, Delivery Lead, Operator">
+            </div>
+            <div>
+              <label class="form-label">{{editId ? 'New password (optional)' : 'Password'}}</label>
+              <input class="form-control admin-input" type="password" ng-model="password" placeholder="Minimum 8 characters">
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn admin-primary-btn" ng-click="add()">
+                <i class="bi" ng-class="editId ? 'bi-check2-circle' : 'bi-person-plus-fill'"></i>
+                <span>{{editId ? 'Update staff member' : 'Save staff member'}}</span>
+              </button>
+              <button class="btn admin-secondary-btn" ng-click="resetForm()" ng-if="editId">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear form</span>
+              </button>
+            </div>
+            <div class="admin-note">
+              Staff members can use their credentials for role-restricted backend routes already present in the system.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="card p-3 mb-4">
+    <div class="col-xl-8">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>Staff directory</h3>
+            <p>Keep internal accounts current so delivery, support, and operations teams stay aligned.</p>
+          </div>
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="bi bi-search"></i>
+              <input class="form-control admin-input" ng-model="searchStaff" placeholder="Search by name, email, phone, or role">
+            </div>
+            <div class="admin-chip">
+              <i class="bi bi-people"></i>
+              <span>{{(staff || []).length}} loaded</span>
+            </div>
+          </div>
+        </div>
 
-<h5>Add Staff</h5>
-
-<input class="form-control mb-2" placeholder="Name" ng-model="name">
-<input class="form-control mb-2" placeholder="Email" ng-model="email">
-<input class="form-control mb-2" placeholder="Password" ng-model="password">
-<input class="form-control mb-2" placeholder="Role" ng-model="role">
-
-<button class="btn btn-primary" ng-click="add()">Add</button>
-
-</div>
-
-<table class="table table-bordered">
-
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Email</th>
-<th>Role</th>
-<th>Action</th>
-</tr>
-
-<tr ng-repeat="s in staff">
-
-<td>{{s.id}}</td>
-<td>{{s.name}}</td>
-<td>{{s.email}}</td>
-<td>{{s.role}}</td>
-
-<td>
-
-<button class="btn btn-warning btn-sm me-1"
-        ng-click="edit(s)">
-Edit
-</button>
-
-<button class="btn btn-danger btn-sm"
-        ng-click="remove(s.id)">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-</table>
-
-</div>
+        <div class="admin-table-wrap">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Staff member</th>
+                <th>Contact</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="s in staff | filter:searchStaff">
+                <td>
+                  <span class="admin-table-primary">{{s.name}}</span>
+                  <span class="admin-table-secondary">Staff ID #{{s.id}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{s.email}}</span>
+                  <span class="admin-table-secondary">{{s.phone || 'Phone not provided'}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{s.role || 'No role assigned'}}</span>
+                </td>
+                <td>
+                  <div class="admin-actions">
+                    <button class="btn admin-icon-btn warning" ng-click="edit(s)">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn admin-icon-btn danger" ng-click="remove(s.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="!(staff || []).length">
+                <td colspan="4">
+                  <div class="admin-empty">No staff accounts found yet.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

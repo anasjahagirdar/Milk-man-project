@@ -1,77 +1,147 @@
-<div class="container">
+<section class="admin-view">
+  <div class="admin-section-header">
+    <div>
+      <div class="admin-section-kicker">
+        <i class="bi bi-bag-check-fill"></i>
+        <span>Order management</span>
+      </div>
+      <h2>Track customer orders</h2>
+      <p>Create individual orders, update statuses, and keep the order ledger ready for daily dispatch.</p>
+    </div>
+  </div>
 
-<h3 class="mb-4">Orders</h3>
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>{{editId ? 'Edit order' : 'Create order'}}</h3>
+            <p>{{editId ? 'Change size, quantity, or status for the selected order.' : 'Record a one-time order for any customer and product.'}}</p>
+          </div>
+          <div class="admin-chip">
+            <i class="bi" ng-class="editId ? 'bi-pencil-square' : 'bi-bag-plus-fill'"></i>
+            <span>{{editId ? 'Update mode' : 'Create mode'}}</span>
+          </div>
+        </div>
+        <div class="admin-panel-body">
+          <div class="admin-form-grid">
+            <div>
+              <label class="form-label">Customer</label>
+              <select class="form-select admin-select" ng-model="customer_id" ng-options="c.id as c.name for c in customers">
+                <option value="">Select customer</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Product</label>
+              <select class="form-select admin-select" ng-model="product_id" ng-options="p.id as p.name for p in products">
+                <option value="">Select product</option>
+              </select>
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Size</label>
+                <select class="form-select admin-select" ng-model="size">
+                  <option value="0.5L">0.5L</option>
+                  <option value="1L">1L</option>
+                  <option value="2L">2L</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Quantity</label>
+                <input type="number" class="form-control admin-input" ng-model="quantity" min="1">
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Status</label>
+              <select class="form-select admin-select" ng-model="status">
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="processing">Processing</option>
+                <option value="delivered">Delivered</option>
+              </select>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn admin-primary-btn" ng-click="add()">
+                <i class="bi" ng-class="editId ? 'bi-check2-circle' : 'bi-bag-plus-fill'"></i>
+                <span>{{editId ? 'Update order' : 'Save order'}}</span>
+              </button>
+              <button class="btn admin-secondary-btn" ng-click="resetForm()" ng-if="editId">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear form</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="card shadow-sm p-4 mb-4">
+    <div class="col-xl-8">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>Order list</h3>
+            <p>Review all order records, sizes, quantities, and total price without leaving the dashboard.</p>
+          </div>
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="bi bi-search"></i>
+              <input class="form-control admin-input" ng-model="searchOrder" placeholder="Search by customer, product, size, or status">
+            </div>
+            <div class="admin-chip">
+              <i class="bi bi-bag"></i>
+              <span>{{(orders || []).length}} loaded</span>
+            </div>
+          </div>
+        </div>
 
-<h5 class="mb-3">Create Order</h5>
-
-<label>Customer</label>
-<select class="form-control mb-2"
-        ng-model="customer_id"
-        ng-options="c.id as c.name for c in customers">
-<option value="">Select Customer</option>
-</select>
-
-<label>Product</label>
-<select class="form-control mb-2"
-        ng-model="product_id"
-        ng-options="p.id as p.name for p in products">
-<option value="">Select Product</option>
-</select>
-
-<label>Size</label>
-<select class="form-control mb-2" ng-model="size">
-<option>0.5L</option>
-<option>1L</option>
-<option>2L</option>
-</select>
-
-<label>Quantity</label>
-<input type="number" class="form-control mb-3" ng-model="quantity">
-
-<button class="btn btn-success w-100" ng-click="add()">Place Order</button>
-
-</div>
-
-
-<table class="table table-bordered">
-
-<tr>
-<th>ID</th>
-<th>Customer</th>
-<th>Product</th>
-<th>Size</th>
-<th>Qty</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-
-<tr ng-repeat="o in orders">
-
-<td>{{o.id}}</td>
-<td>{{customersMap[o.customer_id]}}</td>
-<td>{{productsMap[o.product_id]}}</td>
-<td>{{o.size}}</td>
-<td>{{o.quantity}}</td>
-<td>{{o.status}}</td>
-
-<td>
-
-<button class="btn btn-warning btn-sm me-1"
-        ng-click="edit(o)">
-Edit
-</button>
-
-<button class="btn btn-danger btn-sm"
-        ng-click="remove(o.id)">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-</table>
-
-</div>
+        <div class="admin-table-wrap">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="o in orders | filter:searchOrder">
+                <td>
+                  <span class="admin-table-primary">{{customersMap[o.customer_id] || ('Customer #' + o.customer_id)}}</span>
+                  <span class="admin-table-secondary">{{productsMap[o.product_id] || ('Product #' + o.product_id)}} | {{o.size}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{o.quantity}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">&#8377; {{o.total_price || 0}}</span>
+                </td>
+                <td>
+                  <span class="admin-status-badge" ng-class="o.status || 'pending'">
+                    {{o.status || 'pending'}}
+                  </span>
+                </td>
+                <td>
+                  <div class="admin-actions">
+                    <button class="btn admin-icon-btn warning" ng-click="edit(o)">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn admin-icon-btn danger" ng-click="remove(o.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="!(orders || []).length">
+                <td colspan="5">
+                  <div class="admin-empty">No orders created yet.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

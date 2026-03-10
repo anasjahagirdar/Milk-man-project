@@ -1,33 +1,57 @@
-app.controller("CategoryController", function($scope,$http){
+app.controller("CategoryController", function ($scope, $http) {
+  $scope.editId = null;
 
-function load(){
+  function resetForm() {
+    $scope.editId = null;
+    $scope.name = "";
+    $scope.description = "";
+  }
 
-$http.get("http://127.0.0.1:5000/api/categories/")
-.then(function(res){
+  function load() {
+    $http.get("http://127.0.0.1:5000/api/categories/").then(function (res) {
+      $scope.categories = res.data;
+    });
+  }
 
-$scope.categories=res.data;
+  $scope.resetForm = resetForm;
 
-});
+  load();
 
-}
+  $scope.add = function () {
+    var payload = {
+      name: $scope.name,
+      description: $scope.description,
+    };
 
-load();
+    if ($scope.editId) {
+      $http
+        .put("http://127.0.0.1:5000/api/categories/" + $scope.editId, payload)
+        .then(function () {
+          alert("Category updated");
+          resetForm();
+          load();
+        });
+    } else {
+      $http.post("http://127.0.0.1:5000/api/categories/", payload).then(function () {
+        alert("Category added");
+        resetForm();
+        load();
+      });
+    }
+  };
 
+  $scope.remove = function (id) {
+    if (!confirm("Delete this category?")) return;
 
-$scope.add=function(){
+    $http.delete("http://127.0.0.1:5000/api/categories/" + id).then(function () {
+      alert("Category deleted");
+      load();
+    });
+  };
 
-$http.post(
-"http://127.0.0.1:5000/api/categories/",
-{ name:$scope.name }
-)
-
-.then(function(){
-
-alert("Category added");
-load();
-
-});
-
-};
-
+  $scope.edit = function (category) {
+    $scope.editId = category.id;
+    $scope.name = category.name;
+    $scope.description = category.description;
+  };
 });

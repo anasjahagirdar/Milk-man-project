@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MilkMan — Dashboard</title>
+    <title>MilkMan - Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,7 +33,7 @@
       <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
         <div class="mm-fade-in">
           <h1 class="mm-section-title mb-2">Your dashboard</h1>
-          <div id="mm-welcome" class="text-muted">Loading…</div>
+          <div id="mm-welcome" class="text-muted">Loading...</div>
         </div>
         <div class="mm-fade-in d-flex gap-2">
           <a class="btn mm-btn-secondary" href="products.html">Start new subscription</a>
@@ -47,19 +47,19 @@
         <div class="col-md-6 col-lg-4">
           <div class="mm-card p-4 h-100">
             <div class="fw-bold">Active subscriptions</div>
-            <div id="mm-stat-active" class="display-6 mt-2">—</div>
+            <div id="mm-stat-active" class="display-6 mt-2">-</div>
           </div>
         </div>
         <div class="col-md-6 col-lg-4">
           <div class="mm-card p-4 h-100">
             <div class="fw-bold">Upcoming deliveries</div>
-            <div id="mm-stat-upcoming" class="display-6 mt-2">—</div>
+            <div id="mm-stat-upcoming" class="display-6 mt-2">-</div>
           </div>
         </div>
         <div class="col-md-6 col-lg-4">
           <div class="mm-card p-4 h-100">
             <div class="fw-bold">Orders placed</div>
-            <div id="mm-stat-orders" class="display-6 mt-2">—</div>
+            <div id="mm-stat-orders" class="display-6 mt-2">-</div>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@
               <div class="fw-bold">Subscriptions</div>
               <a class="mm-link" href="products.html">Add subscription</a>
             </div>
-            <div id="mm-subs-loading" class="text-muted">Loading subscriptions…</div>
+            <div id="mm-subs-loading" class="text-muted">Loading subscriptions...</div>
             <div id="mm-subs-empty" class="text-muted d-none">
               No subscriptions yet. Start one from the products page.
             </div>
@@ -85,20 +85,20 @@
             <div class="d-grid gap-2">
               <div class="d-flex justify-content-between">
                 <div class="text-muted">Name</div>
-                <div id="mm-profile-name" class="fw-semibold">—</div>
+                <div id="mm-profile-name" class="fw-semibold">-</div>
               </div>
               <div class="d-flex justify-content-between">
                 <div class="text-muted">Email</div>
-                <div id="mm-profile-email" class="fw-semibold">—</div>
+                <div id="mm-profile-email" class="fw-semibold">-</div>
               </div>
               <div class="d-flex justify-content-between">
                 <div class="text-muted">Phone</div>
-                <div id="mm-profile-phone" class="fw-semibold">—</div>
+                <div id="mm-profile-phone" class="fw-semibold">-</div>
               </div>
               <div class="d-flex justify-content-between">
                 <div class="text-muted">Address</div>
                 <div id="mm-profile-address" class="fw-semibold text-end" style="max-width: 60%">
-                  —
+                  -
                 </div>
               </div>
             </div>
@@ -168,11 +168,39 @@
       const logoutBtn = document.getElementById("mm-logout");
       const editBtn = document.getElementById("mm-edit-profile");
       const profileCta = document.getElementById("mm-profile-cta");
+      const escapeHtml = window.MilkMan.utils.escapeHtml;
+      const formatCurrency = window.MilkMan.utils.formatCurrency;
+      const productImageSources = window.MilkMan.products.getImageSources;
+      const fallbackImage = window.MilkMan.products.defaultImage;
 
       const profileModalEl = document.getElementById("mmProfileModal");
       const profileModal = new bootstrap.Modal(profileModalEl);
       const profileForm = document.getElementById("mm-profile-form");
       const profileAlert = document.getElementById("mm-profile-alert");
+
+      function hydrateImages(scope) {
+        scope.querySelectorAll("img[data-fallback]").forEach((img) => {
+          img.addEventListener("error", () => {
+            const current = img.getAttribute("src");
+            const fallbacks = JSON.parse(img.dataset.fallbacks || "[]");
+            const next = fallbacks.shift();
+
+            if (fallbacks.length) {
+              img.dataset.fallbacks = JSON.stringify(fallbacks);
+            } else {
+              img.removeAttribute("data-fallbacks");
+            }
+
+            if (next && current !== next) {
+              img.setAttribute("src", next);
+              return;
+            }
+            if (img.dataset.final && current !== img.dataset.final) {
+              img.setAttribute("src", img.dataset.final);
+            }
+          });
+        });
+      }
 
       logoutBtn.addEventListener("click", async () => {
         await window.MilkMan.auth.logout();
@@ -193,19 +221,27 @@
         profileAlert.classList.add("d-none");
       }
 
+      function renderThumb(product) {
+        const image = productImageSources(product || {});
+        return `
+          <div class="mm-inline-thumb">
+            <img
+              src="${escapeHtml(image.primary)}"
+              alt="${escapeHtml((product && product.name) || "Product")}"
+              data-fallback="${escapeHtml((image.fallbacks && image.fallbacks[0]) || fallbackImage)}"
+              data-fallbacks='${escapeHtml(JSON.stringify(image.fallbacks || []))}'
+              data-final="${escapeHtml(image.final || fallbackImage)}"
+              loading="lazy"
+            />
+          </div>
+        `;
+      }
+
       function subRow(sub) {
         const status = sub.status || "active";
-        const pill =
-          status === "active"
-            ? "mm-pill"
-            : status === "paused"
-              ? "mm-pill"
-              : "mm-pill";
-
-        const next = sub.next_delivery_date ? sub.next_delivery_date : "—";
-        const productName = (sub.product && sub.product.name) || `Product #${sub.product_id}`;
-        const meta = `${sub.frequency} • Qty ${sub.quantity} • Next: ${next}`;
-
+        const next = sub.next_delivery_date ? sub.next_delivery_date : "-";
+        const product = sub.product || { id: sub.product_id, name: `Product #${sub.product_id}` };
+        const meta = `${sub.frequency} | Qty ${sub.quantity} | Next: ${next}`;
         const disabledAttr = status === "canceled" ? "disabled" : "";
 
         const pauseResume =
@@ -218,12 +254,15 @@
         return `
           <div class="mm-card p-3">
             <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-              <div>
-                <div class="fw-bold">${productName}</div>
-                <div class="text-muted" style="font-size:13px">${meta}</div>
+              <div class="d-flex align-items-center gap-3">
+                ${renderThumb(product)}
+                <div>
+                  <div class="fw-bold">${escapeHtml(product.name)}</div>
+                  <div class="text-muted" style="font-size:13px">${escapeHtml(meta)}</div>
+                </div>
               </div>
               <div class="d-flex gap-2 align-items-center">
-                <span class="${pill}" style="padding:6px 10px">${status}</span>
+                <span class="mm-pill" style="padding:6px 10px">${escapeHtml(status)}</span>
                 <div class="d-flex gap-2">
                   <button class="btn btn-sm mm-btn-secondary" ${disabledAttr} data-action="details">Details</button>
                   ${pauseResume}
@@ -240,10 +279,10 @@
           const me = await window.MilkMan.auth.me();
           document.getElementById("mm-welcome").textContent = `Welcome back, ${me.name}`;
 
-          document.getElementById("mm-profile-name").textContent = me.name || "—";
-          document.getElementById("mm-profile-email").textContent = me.email || "—";
-          document.getElementById("mm-profile-phone").textContent = me.phone || "—";
-          document.getElementById("mm-profile-address").textContent = me.address || "—";
+          document.getElementById("mm-profile-name").textContent = me.name || "-";
+          document.getElementById("mm-profile-email").textContent = me.email || "-";
+          document.getElementById("mm-profile-phone").textContent = me.phone || "-";
+          document.getElementById("mm-profile-address").textContent = me.address || "-";
 
           profileForm.name.value = me.name || "";
           profileForm.phone.value = me.phone || "";
@@ -277,6 +316,7 @@
               if (!s.product && productMap[s.product_id]) s.product = productMap[s.product_id];
               const wrapper = document.createElement("div");
               wrapper.innerHTML = subRow(s);
+              hydrateImages(wrapper);
               const row = wrapper.firstElementChild;
               row.querySelectorAll("[data-action]").forEach((btn) => {
                 btn.addEventListener("click", async () => {
@@ -321,18 +361,27 @@
             deliveriesEmpty.classList.remove("d-none");
           } else {
             upcoming.forEach((s) => {
-              const productName = (s.product && s.product.name) || `Product #${s.product_id}`;
+              const product = (s.product && s.product.name && s.product) || productMap[s.product_id] || {
+                id: s.product_id,
+                name: `Product #${s.product_id}`,
+              };
               const el = document.createElement("div");
               el.className = "mm-card p-3";
               el.innerHTML = `
-                <div class="d-flex justify-content-between gap-3 flex-wrap">
-                  <div>
-                    <div class="fw-bold">${productName}</div>
-                    <div class="text-muted" style="font-size:13px">${s.frequency} • Qty ${s.quantity}</div>
+                <div class="d-flex justify-content-between gap-3 flex-wrap align-items-center">
+                  <div class="d-flex align-items-center gap-3">
+                    ${renderThumb(product)}
+                    <div>
+                      <div class="fw-bold">${escapeHtml(product.name)}</div>
+                      <div class="text-muted" style="font-size:13px">${escapeHtml(
+                        `${s.frequency} | Qty ${s.quantity}`
+                      )}</div>
+                    </div>
                   </div>
-                  <div class="fw-bold">${s.next_delivery_date}</div>
+                  <div class="fw-bold">${escapeHtml(s.next_delivery_date)}</div>
                 </div>
               `;
+              hydrateImages(el);
               deliveriesEl.appendChild(el);
             });
           }
@@ -344,18 +393,24 @@
             ordersEmpty.classList.remove("d-none");
           } else {
             recentOrders.forEach((o) => {
-              const productName = (productMap[o.product_id] && productMap[o.product_id].name) || `Product #${o.product_id}`;
+              const product = productMap[o.product_id] || { id: o.product_id, name: `Product #${o.product_id}` };
               const el = document.createElement("div");
               el.className = "mm-card p-3";
               el.innerHTML = `
-                <div class="d-flex justify-content-between gap-3 flex-wrap">
-                  <div>
-                    <div class="fw-bold">${productName}</div>
-                    <div class="text-muted" style="font-size:13px">${o.status || "pending"} • Qty ${o.quantity}</div>
+                <div class="d-flex justify-content-between gap-3 flex-wrap align-items-center">
+                  <div class="d-flex align-items-center gap-3">
+                    ${renderThumb(product)}
+                    <div>
+                      <div class="fw-bold">${escapeHtml(product.name)}</div>
+                      <div class="text-muted" style="font-size:13px">${escapeHtml(
+                        `${o.status || "pending"} | Qty ${o.quantity}`
+                      )}</div>
+                    </div>
                   </div>
-                  <div class="fw-bold">₹ ${o.total_price || 0}</div>
+                  <div class="fw-bold">${formatCurrency(o.total_price || 0)}</div>
                 </div>
               `;
+              hydrateImages(el);
               ordersEl.appendChild(el);
             });
           }
@@ -372,9 +427,9 @@
                 body: JSON.stringify(payload),
               });
               showProfileAlert("success", "Profile updated");
-              document.getElementById("mm-profile-name").textContent = updated.name || "—";
-              document.getElementById("mm-profile-phone").textContent = updated.phone || "—";
-              document.getElementById("mm-profile-address").textContent = updated.address || "—";
+              document.getElementById("mm-profile-name").textContent = updated.name || "-";
+              document.getElementById("mm-profile-phone").textContent = updated.phone || "-";
+              document.getElementById("mm-profile-address").textContent = updated.address || "-";
               profileModal.hide();
             } catch (err) {
               showProfileAlert("error", err.message || "Update failed");

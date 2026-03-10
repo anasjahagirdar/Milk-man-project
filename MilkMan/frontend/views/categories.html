@@ -1,33 +1,110 @@
-<div class="container">
+<section class="admin-view">
+  <div class="admin-section-header">
+    <div>
+      <div class="admin-section-kicker">
+        <i class="bi bi-tags-fill"></i>
+        <span>Catalog structure</span>
+      </div>
+      <h2>Organize product categories</h2>
+      <p>Use categories to keep the product catalog grouped cleanly for operations and the customer site.</p>
+    </div>
+  </div>
 
-<h3 class="mb-4">Categories</h3>
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>{{editId ? 'Edit category' : 'Add category'}}</h3>
+            <p>{{editId ? 'Update the label or short description for this category.' : 'Create a new category for the product catalog.'}}</p>
+          </div>
+          <div class="admin-chip">
+            <i class="bi" ng-class="editId ? 'bi-pencil-square' : 'bi-tag-fill'"></i>
+            <span>{{editId ? 'Update mode' : 'Create mode'}}</span>
+          </div>
+        </div>
+        <div class="admin-panel-body">
+          <div class="admin-form-grid">
+            <div>
+              <label class="form-label">Category name</label>
+              <input class="form-control admin-input" ng-model="name" placeholder="Cow Milk, Ghee, Paneer">
+            </div>
+            <div>
+              <label class="form-label">Description</label>
+              <textarea class="form-control admin-input" rows="3" ng-model="description" placeholder="Short note for internal context"></textarea>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn admin-primary-btn" ng-click="add()">
+                <i class="bi" ng-class="editId ? 'bi-check2-circle' : 'bi-tag-fill'"></i>
+                <span>{{editId ? 'Update category' : 'Save category'}}</span>
+              </button>
+              <button class="btn admin-secondary-btn" ng-click="resetForm()" ng-if="editId">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear form</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="card p-3 mb-4">
+    <div class="col-xl-8">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>Category list</h3>
+            <p>Review the category structure used for admin catalog management and customer browsing.</p>
+          </div>
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="bi bi-search"></i>
+              <input class="form-control admin-input" ng-model="searchCategory" placeholder="Search by name or description">
+            </div>
+            <div class="admin-chip">
+              <i class="bi bi-collection"></i>
+              <span>{{(categories || []).length}} loaded</span>
+            </div>
+          </div>
+        </div>
 
-<input class="form-control mb-2"
-       placeholder="Category name"
-       ng-model="name">
-
-<button class="btn btn-primary"
-        ng-click="add()">
-Add Category
-</button>
-
-</div>
-
-
-<table class="table table-bordered">
-
-<tr>
-<th>ID</th>
-<th>Name</th>
-</tr>
-
-<tr ng-repeat="c in categories">
-<td>{{c.id}}</td>
-<td>{{c.name}}</td>
-</tr>
-
-</table>
-
-</div>
+        <div class="admin-table-wrap">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="c in categories | filter:searchCategory">
+                <td>
+                  <span class="admin-table-primary">{{c.name}}</span>
+                  <span class="admin-table-secondary">Category ID #{{c.id}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{c.description || 'No description provided'}}</span>
+                </td>
+                <td>
+                  <div class="admin-actions">
+                    <button class="btn admin-icon-btn warning" ng-click="edit(c)">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn admin-icon-btn danger" ng-click="remove(c.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="!(categories || []).length">
+                <td colspan="3">
+                  <div class="admin-empty">No categories found yet.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

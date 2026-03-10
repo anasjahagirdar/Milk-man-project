@@ -1,96 +1,153 @@
-<div class="container">
+<section class="admin-view">
+  <div class="admin-section-header">
+    <div>
+      <div class="admin-section-kicker">
+        <i class="bi bi-arrow-repeat"></i>
+        <span>Recurring deliveries</span>
+      </div>
+      <h2>Manage subscription plans</h2>
+      <p>Create and adjust recurring orders with payment status, frequency, and start dates tracked in one place.</p>
+    </div>
+  </div>
 
-<h3 class="mb-4">Subscriptions</h3>
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>{{editId ? 'Edit subscription' : 'Add subscription'}}</h3>
+            <p>{{editId ? 'Update the delivery cadence or payment state for an existing subscription.' : 'Create a new recurring plan for a customer.'}}</p>
+          </div>
+          <div class="admin-chip">
+            <i class="bi" ng-class="editId ? 'bi-pencil-square' : 'bi-calendar-plus-fill'"></i>
+            <span>{{editId ? 'Update mode' : 'Create mode'}}</span>
+          </div>
+        </div>
+        <div class="admin-panel-body">
+          <div class="admin-form-grid">
+            <div>
+              <label class="form-label">Customer</label>
+              <select class="form-select admin-select" ng-model="customer_id" ng-options="c.id as c.name for c in customers">
+                <option value="">Select customer</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Product</label>
+              <select class="form-select admin-select" ng-model="product_id" ng-options="p.id as p.name for p in products">
+                <option value="">Select product</option>
+              </select>
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Start date</label>
+                <input type="date" class="form-control admin-input" ng-model="start_date">
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Quantity</label>
+                <input type="number" class="form-control admin-input" ng-model="quantity" min="1">
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label class="form-label">Frequency</label>
+                <select class="form-select admin-select" ng-model="frequency">
+                  <option value="daily">Daily</option>
+                  <option value="alternate">Alternate</option>
+                  <option value="weekly">Weekly</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <label class="form-label">Payment status</label>
+                <select class="form-select admin-select" ng-model="payment_status">
+                  <option value="pending">Pending</option>
+                  <option value="paid">Paid</option>
+                </select>
+              </div>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn admin-primary-btn" ng-click="add()">
+                <i class="bi" ng-class="editId ? 'bi-check2-circle' : 'bi-calendar-plus-fill'"></i>
+                <span>{{editId ? 'Update subscription' : 'Save subscription'}}</span>
+              </button>
+              <button class="btn admin-secondary-btn" ng-click="resetForm()" ng-if="editId">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear form</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="card shadow-sm p-4 mb-4">
+    <div class="col-xl-8">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>Subscription list</h3>
+            <p>See who is subscribed, what product is scheduled, and whether payment is pending or complete.</p>
+          </div>
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="bi bi-search"></i>
+              <input class="form-control admin-input" ng-model="searchSubscription" placeholder="Search by customer, product, status, or frequency">
+            </div>
+            <div class="admin-chip">
+              <i class="bi bi-arrow-repeat"></i>
+              <span>{{(subscriptions || []).length}} loaded</span>
+            </div>
+          </div>
+        </div>
 
-<h5 class="mb-3">Add New Subscription</h5>
-
-<div class="mb-2">
-<label class="form-label">Customer</label>
-<select class="form-control"
-        ng-model="customer_id"
-        ng-options="c.id as c.name for c in customers">
-<option value="">Select Customer</option>
-</select>
-</div>
-
-<div class="mb-2">
-<label class="form-label">Product</label>
-<select class="form-control"
-        ng-model="product_id"
-        ng-options="p.id as p.name for p in products">
-<option value="">Select Product</option>
-</select>
-</div>
-
-<div class="mb-2">
-<label class="form-label">Start Date</label>
-<input type="date"
-       class="form-control"
-       ng-model="start_date">
-</div>
-
-<div class="mb-2">
-<label class="form-label">Quantity</label>
-<input type="number"
-       class="form-control"
-       placeholder="Enter quantity"
-       ng-model="quantity">
-</div>
-
-<div class="mb-3">
-<label class="form-label">Payment Status</label>
-<select class="form-control"
-        ng-model="payment_status">
-<option value="pending">Pending</option>
-<option value="paid">Paid</option>
-</select>
-</div>
-
-<button class="btn btn-primary w-100"
-        ng-click="add()">
-Add Subscription
-</button>
-
-</div>
-
-
-<table class="table table-bordered">
-
-<tr>
-<th>ID</th>
-<th>Customer</th>
-<th>Product</th>
-<th>Qty</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-
-<tr ng-repeat="s in subscriptions">
-
-<td>{{s.id}}</td>
-<td>{{customersMap[s.customer_id]}}</td>
-<td>{{productsMap[s.product_id]}}</td>
-<td>{{s.quantity}}</td>
-<td>{{s.payment_status}}</td>
-
-<td>
-
-<button class="btn btn-warning btn-sm me-1"
-        ng-click="edit(s)">
-Edit
-</button>
-
-<button class="btn btn-danger btn-sm"
-        ng-click="remove(s.id)">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-</table>
-
-</div>
+        <div class="admin-table-wrap">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Subscription</th>
+                <th>Schedule</th>
+                <th>Payment</th>
+                <th>Next delivery</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="s in subscriptions | filter:searchSubscription">
+                <td>
+                  <span class="admin-table-primary">{{customersMap[s.customer_id] || ('Customer #' + s.customer_id)}}</span>
+                  <span class="admin-table-secondary">{{productsMap[s.product_id] || ('Product #' + s.product_id)}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{s.frequency || 'daily'}} | Qty {{s.quantity}}</span>
+                  <span class="admin-table-secondary">Start: {{s.start_date}}</span>
+                </td>
+                <td>
+                  <span class="admin-status-badge" ng-class="s.payment_status">
+                    {{s.payment_status || 'pending'}}
+                  </span>
+                  <span class="admin-table-secondary">Status: {{s.status || 'active'}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{s.next_delivery_date || 'Not available'}}</span>
+                </td>
+                <td>
+                  <div class="admin-actions">
+                    <button class="btn admin-icon-btn warning" ng-click="edit(s)">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn admin-icon-btn danger" ng-click="remove(s.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="!(subscriptions || []).length">
+                <td colspan="5">
+                  <div class="admin-empty">No subscriptions created yet.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

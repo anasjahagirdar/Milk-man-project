@@ -3,7 +3,9 @@ app.controller("DashboardController", function($scope,$http){
 $scope.stats={};
 
 $http.get("http://127.0.0.1:5000/api/customers/")
-.then(res => $scope.stats.customers=(res.data.data||res.data).length);
+.then(function(res){
+$scope.stats.customers = res.data.total || (res.data.data || res.data).length;
+});
 
 $http.get("http://127.0.0.1:5000/api/staff/")
 .then(res => $scope.stats.staff=res.data.length);

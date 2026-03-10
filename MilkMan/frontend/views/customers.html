@@ -1,51 +1,131 @@
-<div class="container">
+<section class="admin-view">
+  <div class="admin-section-header">
+    <div>
+      <div class="admin-section-kicker">
+        <i class="bi bi-people-fill"></i>
+        <span>Customer operations</span>
+      </div>
+      <h2>Manage customer records</h2>
+      <p>Create and update customer accounts used by orders and subscriptions without leaving the dashboard.</p>
+    </div>
+  </div>
 
-<h3 class="mb-4">Customers</h3>
+  <div class="row g-4">
+    <div class="col-xl-4">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>{{editId ? 'Edit customer' : 'Add customer'}}</h3>
+            <p>{{editId ? 'Update contact details or replace the password for an existing customer.' : 'Create a new customer profile with delivery details.'}}</p>
+          </div>
+          <div class="admin-chip">
+            <i class="bi" ng-class="editId ? 'bi-pencil-square' : 'bi-person-plus-fill'"></i>
+            <span>{{editId ? 'Update mode' : 'Create mode'}}</span>
+          </div>
+        </div>
+        <div class="admin-panel-body">
+          <div class="admin-form-grid">
+            <div>
+              <label class="form-label">Full name</label>
+              <input class="form-control admin-input" ng-model="name" placeholder="Customer name">
+            </div>
+            <div>
+              <label class="form-label">Email address</label>
+              <input class="form-control admin-input" ng-model="email" placeholder="customer@example.com">
+            </div>
+            <div>
+              <label class="form-label">Phone number</label>
+              <input class="form-control admin-input" ng-model="phone" placeholder="+91 98765 43210">
+            </div>
+            <div>
+              <label class="form-label">Delivery address</label>
+              <textarea class="form-control admin-input" rows="3" ng-model="address" placeholder="House, street, area"></textarea>
+            </div>
+            <div>
+              <label class="form-label">{{editId ? 'New password (optional)' : 'Password'}}</label>
+              <input class="form-control admin-input" type="password" ng-model="password" placeholder="Minimum 8 characters">
+              <div class="admin-field-help">Leave blank while editing to keep the existing password unchanged.</div>
+            </div>
+            <div class="admin-form-actions">
+              <button class="btn admin-primary-btn" ng-click="addCustomer()">
+                <i class="bi" ng-class="editId ? 'bi-check2-circle' : 'bi-person-plus-fill'"></i>
+                <span>{{editId ? 'Update customer' : 'Save customer'}}</span>
+              </button>
+              <button class="btn admin-secondary-btn" ng-click="resetForm()" ng-if="editId">
+                <i class="bi bi-x-circle"></i>
+                <span>Clear form</span>
+              </button>
+            </div>
+            <div class="admin-note">
+              Customers created here can immediately be used in orders and subscriptions.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="card p-3 mb-4">
+    <div class="col-xl-8">
+      <div class="admin-panel">
+        <div class="admin-panel-header">
+          <div>
+            <h3>Customer directory</h3>
+            <p>Review the customer list, inspect delivery details, and jump into edits when needed.</p>
+          </div>
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="bi bi-search"></i>
+              <input class="form-control admin-input" ng-model="searchCustomer" placeholder="Search by name, email, phone, or address">
+            </div>
+            <div class="admin-chip">
+              <i class="bi bi-person-lines-fill"></i>
+              <span>{{(customers || []).length}} loaded</span>
+            </div>
+          </div>
+        </div>
 
-<h5>Add Customer</h5>
-
-<input class="form-control mb-2" placeholder="Name" ng-model="name">
-<input class="form-control mb-2" placeholder="Email" ng-model="email">
-<input class="form-control mb-2" placeholder="Password" ng-model="password">
-
-<button class="btn btn-primary" ng-click="addCustomer()">Add</button>
-
-</div>
-
-
-<table class="table table-bordered">
-
-<tr>
-<th>ID</th>
-<th>Name</th>
-<th>Email</th>
-<th>Action</th>
-</tr>
-
-<tr ng-repeat="c in customers">
-
-<td>{{c.id}}</td>
-<td>{{c.name}}</td>
-<td>{{c.email}}</td>
-
-<td>
-
-<button class="btn btn-warning btn-sm me-1"
-        ng-click="edit(c)">
-Edit
-</button>
-
-<button class="btn btn-danger btn-sm"
-        ng-click="remove(c.id)">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-</table>
-
-</div>
+        <div class="admin-table-wrap">
+          <table class="table admin-table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="c in customers | filter:searchCustomer">
+                <td>
+                  <span class="admin-table-primary">{{c.name}}</span>
+                  <span class="admin-table-secondary">Customer ID #{{c.id}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{c.email}}</span>
+                  <span class="admin-table-secondary">{{c.phone || 'Phone not provided'}}</span>
+                </td>
+                <td>
+                  <span class="admin-table-primary">{{c.address || 'Address not provided'}}</span>
+                </td>
+                <td>
+                  <div class="admin-actions">
+                    <button class="btn admin-icon-btn warning" ng-click="edit(c)">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <button class="btn admin-icon-btn danger" ng-click="remove(c.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr ng-if="!(customers || []).length">
+                <td colspan="4">
+                  <div class="admin-empty">No customers found yet.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

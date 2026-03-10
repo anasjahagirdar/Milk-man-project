@@ -15,9 +15,19 @@ ALLOWED_UNITS = {"L", "ml", "kg", "g", "pieces", "custom"}
 def create_product():
 
     data = request.get_json() or {}
+    name = (data.get("name") or "").strip()
+    category_id = data.get("category_id")
+    price = data.get("price")
+
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
+    if category_id is None:
+        return jsonify({"error": "category_id is required"}), 400
+    if price is None:
+        return jsonify({"error": "price is required"}), 400
 
     # validate category exists
-    if not Category.query.get(data["category_id"]):
+    if not Category.query.get(category_id):
         return jsonify({"error": "Category not found"}), 404
 
     # validate size (free-form but required)
@@ -32,12 +42,12 @@ def create_product():
         return jsonify({"error": "Invalid unit"}), 400
 
     product = Product(
-        name=data["name"],
-        category_id=data["category_id"],
+        name=name,
+        category_id=category_id,
         size=data["size"],
         unit=unit,
-        price=data["price"],
-        description=data.get("description"),
+        price=price,
+        description=(data.get("description") or "").strip() or None,
         stock=data.get("stock", 0),
         is_active=bool(data.get("is_active", True)),
     )
@@ -103,6 +113,9 @@ def update_product(id):
     if data.get("size") is not None and not data.get("size"):
         return jsonify({"error": "Size is required"}), 400
 
+    if data.get("category_id") is not None and not Category.query.get(data.get("category_id")):
+        return jsonify({"error": "Category not found"}), 404
+
     if data.get("unit") is not None:
         unit = (data.get("unit") or "").strip().lower()
         unit_map = {"liters": "L", "liter": "L", "l": "L", "milliliters": "ml"}
@@ -111,11 +124,16 @@ def update_product(id):
             return jsonify({"error": "Invalid unit"}), 400
         product.unit = unit
 
-    product.name = data.get("name", product.name)
+    if data.get("name") is not None:
+        name = (data.get("name") or "").strip()
+        if not name:
+            return jsonify({"error": "Name is required"}), 400
+        product.name = name
     product.category_id = data.get("category_id", product.category_id)
     product.size = data.get("size", product.size)
     product.price = data.get("price", product.price)
-    product.description = data.get("description", product.description)
+    if data.get("description") is not None:
+        product.description = (data.get("description") or "").strip() or None
     product.stock = data.get("stock", product.stock)
     if data.get("is_active") is not None:
         product.is_active = bool(data.get("is_active"))

@@ -208,6 +208,21 @@ def update_subscription(id):
     if user_id and sub.customer_id != user_id:
         return jsonify({"error": "Forbidden"}), 403
 
+    if data.get("customer_id") is not None:
+        if user_id and int(data.get("customer_id")) != user_id:
+            return jsonify({"error": "Forbidden"}), 403
+        customer = Customer.query.get(data.get("customer_id"))
+        if not customer:
+            return jsonify({"error": "Customer not found"}), 404
+        sub.customer_id = customer.id
+
+    if data.get("product_id") is not None:
+        product = Product.query.get(data.get("product_id"))
+        if not product:
+            return jsonify({"error": "Product not found"}), 404
+        sub.product_id = product.id
+        sub.unit_price = product.price
+
     if data.get("quantity") is not None:
         try:
             quantity = int(data.get("quantity") or 1)

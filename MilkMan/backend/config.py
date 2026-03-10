@@ -4,7 +4,10 @@ from datetime import timedelta
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "milkman-dev-secret-key-change-me-please-2026",
+)
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", SECRET_KEY)
 
 SQLALCHEMY_DATABASE_URI = "sqlite:///milkman.db"

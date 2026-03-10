@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MilkMan — Products</title>
+    <title>MilkMan - Products</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,8 +40,8 @@
         <a class="btn mm-btn-secondary" href="dashboard.html">Go to dashboard</a>
       </div>
 
-      <div id="mm-products" class="row g-3"></div>
-      <div id="mm-products-loading" class="text-muted">Loading products…</div>
+      <div id="mm-products" class="row g-4"></div>
+      <div id="mm-products-loading" class="text-muted">Loading products...</div>
       <div id="mm-products-empty" class="text-muted d-none">
         No products found. Add products from the admin panel.
       </div>
@@ -82,7 +82,7 @@
               <div class="mm-card p-3 mt-3">
                 <div class="d-flex justify-content-between">
                   <div class="text-muted">Estimated monthly cost</div>
-                  <div class="fw-bold" id="mmSubEstimate">—</div>
+                  <div class="fw-bold" id="mmSubEstimate">-</div>
                 </div>
                 <div class="text-muted mt-1" style="font-size: 13px" id="mmSubBreakdown"></div>
               </div>
@@ -98,6 +98,10 @@
     <script>
       const accountLink = document.getElementById("mm-account-link");
       const logoutBtn = document.getElementById("mm-logout");
+      const escapeHtml = window.MilkMan.utils.escapeHtml;
+      const formatCurrency = window.MilkMan.utils.formatCurrency;
+      const productImageSources = window.MilkMan.products.getImageSources;
+      const fallbackImage = window.MilkMan.products.defaultImage;
 
       function setLoggedIn(isLoggedIn) {
         if (isLoggedIn) {
@@ -109,6 +113,30 @@
           accountLink.href = "login.html";
           logoutBtn.classList.add("d-none");
         }
+      }
+
+      function hydrateImages(scope) {
+        scope.querySelectorAll("img[data-fallback]").forEach((img) => {
+          img.addEventListener("error", () => {
+            const current = img.getAttribute("src");
+            const fallbacks = JSON.parse(img.dataset.fallbacks || "[]");
+            const next = fallbacks.shift();
+
+            if (fallbacks.length) {
+              img.dataset.fallbacks = JSON.stringify(fallbacks);
+            } else {
+              img.removeAttribute("data-fallbacks");
+            }
+
+            if (next && current !== next) {
+              img.setAttribute("src", next);
+              return;
+            }
+            if (img.dataset.final && current !== img.dataset.final) {
+              img.setAttribute("src", img.dataset.final);
+            }
+          });
+        });
       }
 
       logoutBtn.addEventListener("click", async () => {
@@ -179,10 +207,12 @@
               quantity
             )}&frequency=${encodeURIComponent(frequency)}`
           );
-          estimateEl.textContent = `₹ ${preview.estimated_monthly_total}`;
-          breakdownEl.textContent = `${preview.deliveries_per_month} deliveries/month • ₹ ${preview.unit_price} per unit`;
+          estimateEl.textContent = formatCurrency(preview.estimated_monthly_total || 0);
+          breakdownEl.textContent = `${preview.deliveries_per_month} deliveries/month | ${formatCurrency(
+            preview.unit_price || 0
+          )} per unit`;
         } catch {
-          estimateEl.textContent = "—";
+          estimateEl.textContent = "-";
           breakdownEl.textContent = "";
         }
       }
@@ -194,10 +224,46 @@
         form.reset();
         form.querySelector("[name=product_id]").value = product.id;
         document.getElementById("mmSubTitle").textContent = `Subscribe: ${product.name}`;
-        document.getElementById("mmSubMeta").textContent = `${product.size || ""} • ₹ ${product.price}`;
+        document.getElementById("mmSubMeta").textContent = `${product.size || ""} | ${formatCurrency(
+          product.price || 0
+        )}`;
         setTodayAsDefaultStart();
         await refreshEstimate();
         modal.show();
+      }
+
+      function productCard(product) {
+        const image = productImageSources(product);
+        return `
+          <article class="mm-card mm-product-card h-100">
+            <div class="mm-product-media">
+              <img
+                class="mm-product-image"
+                src="${escapeHtml(image.primary)}"
+                alt="${escapeHtml(product.name || "MilkMan product")}"
+                data-fallback="${escapeHtml((image.fallbacks && image.fallbacks[0]) || fallbackImage)}"
+                data-fallbacks='${escapeHtml(JSON.stringify(image.fallbacks || []))}'
+                data-final="${escapeHtml(image.final || fallbackImage)}"
+                loading="lazy"
+              />
+            </div>
+            <div class="mm-product-body">
+              <div class="mm-product-meta">
+                <h2 class="mm-product-title">${escapeHtml(product.name || "Untitled product")}</h2>
+                <div class="mm-product-price">${formatCurrency(product.price || 0)}</div>
+              </div>
+              <p class="mm-product-copy">${escapeHtml(
+                product.description || "Fresh dairy delivered to your doorstep."
+              )}</p>
+              <div class="mm-product-footer">
+                <div>
+                  <div class="mm-product-note">${escapeHtml(product.size || "Available in multiple sizes")}</div>
+                </div>
+                <button class="mm-product-cta border-0" type="button">Subscribe</button>
+              </div>
+            </div>
+          </article>
+        `;
       }
 
       form.addEventListener("input", () => refreshEstimate());
@@ -228,25 +294,12 @@
             emptyEl.classList.remove("d-none");
             return;
           }
-          products.forEach((p) => {
+          products.forEach((product) => {
             const col = document.createElement("div");
-            col.className = "col-12 col-sm-6 col-lg-4";
-            col.innerHTML = `
-              <div class="mm-card p-4 h-100 d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-start gap-2">
-                  <div>
-                    <div class="fw-bold" style="font-size:18px">${p.name}</div>
-                    <div class="text-muted" style="font-size:13px">${p.size || ""}</div>
-                  </div>
-                  <div class="fw-bold">₹ ${p.price}</div>
-                </div>
-                <div class="text-muted mt-2" style="line-height:1.6">${p.description || ""}</div>
-                <div class="mt-auto pt-3">
-                  <button class="btn mm-btn-primary w-100" type="button">Subscribe</button>
-                </div>
-              </div>
-            `;
-            col.querySelector("button").addEventListener("click", () => openSubscribe(p));
+            col.className = "col-12 col-md-6 col-xl-4";
+            col.innerHTML = productCard(product);
+            hydrateImages(col);
+            col.querySelector("button").addEventListener("click", () => openSubscribe(product));
             productsEl.appendChild(col);
           });
         } catch (err) {
