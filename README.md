@@ -400,9 +400,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/) for commit m
 
 ---
 
-## 📄 License
 
-MIT License — see `LICENSE` for details.
 
 ---
 
