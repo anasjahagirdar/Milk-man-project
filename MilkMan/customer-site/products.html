@@ -3,140 +3,209 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MilkMan - Products</title>
+    <title>MilkMan — The Collection</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <style>
+      .qty-control {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--mm-border);
+        border-radius: var(--mm-radius-full);
+        overflow: hidden;
+        width: fit-content;
+      }
+      .qty-btn {
+        padding: 0.75rem 1.25rem;
+        border: none;
+        background: none;
+        color: var(--mm-text-main);
+        font-weight: 800;
+        transition: var(--mm-transition);
+      }
+      .qty-btn:hover { background: var(--mm-accent); color: var(--mm-bg); }
+      .qty-input {
+        width: 60px;
+        text-align: center;
+        border: none;
+        background: none;
+        color: var(--mm-text-main);
+        font-weight: 700;
+        outline: none;
+      }
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
+      }
+    </style>
   </head>
-  <body class="mm-page">
-    <nav class="navbar navbar-expand-lg mm-nav sticky-top">
-      <div class="container">
-        <a class="navbar-brand mm-brand" href="index.html">MilkMan</a>
-        <div class="ms-auto d-flex gap-2 align-items-center">
-          <a id="mm-account-link" class="btn btn-sm mm-btn-secondary" href="login.html">Login</a>
-          <button id="mm-logout" class="btn btn-sm btn-outline-danger d-none" type="button">
-            Logout
-          </button>
-        </div>
+  <body class="bg-primary">
+    <nav class="nav-post-login">
+      <a class="navbar-brand" href="index.html">MILKMAN</a>
+      <div class="d-flex gap-4 align-items-center">
+        <a class="btn-outline-green" href="dashboard.html">My Dashboard</a>
+        <button id="mm-logout" class="btn-logout" type="button">Logout</button>
       </div>
     </nav>
 
-    <main class="container py-5">
-      <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
-        <div>
-          <h1 class="mm-section-title mb-2">Products</h1>
-          <p class="mm-section-subtitle mb-0">
-            Subscribe with your preferred quantity and frequency. Preview monthly cost instantly.
-          </p>
-        </div>
-        <a class="btn mm-btn-secondary" href="dashboard.html">Go to dashboard</a>
-      </div>
+    <main class="container py-12">
+      <header class="mb-12 reveal active">
+        <h1 class="display-2 text-primary mb-4">Our Fresh Products</h1>
+        <p class="text-secondary lead" style="max-width: 600px;">
+          Pure, farm-fresh goodness delivered to your door every morning. Select your essentials and start your journey with us.
+        </p>
+      </header>
 
-      <div id="mm-products" class="row g-4"></div>
-      <div id="mm-products-loading" class="text-muted">Loading products...</div>
-      <div id="mm-products-empty" class="text-muted d-none">
-        No products found. Add products from the admin panel.
+      <div id="mm-products" class="row g-4">
+        <!-- Skeleton Loaders -->
+        <div class="col-md-6 col-lg-4 mm-skeleton reveal active">
+          <div class="product-card">
+            <div class="skeleton" style="height: 220px;"></div>
+            <div class="product-card-body">
+              <div class="skeleton mb-3" style="height: 28px; width: 60%;"></div>
+              <div class="skeleton mb-4" style="height: 18px; width: 90%;"></div>
+              <div class="skeleton mt-auto" style="height: 50px; width: 100%; border-radius: 12px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mm-skeleton reveal active stagger-1">
+          <div class="product-card">
+            <div class="skeleton" style="height: 220px;"></div>
+            <div class="product-card-body">
+              <div class="skeleton mb-3" style="height: 28px; width: 60%;"></div>
+              <div class="skeleton mb-4" style="height: 18px; width: 90%;"></div>
+              <div class="skeleton mt-auto" style="height: 50px; width: 100%; border-radius: 12px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4 mm-skeleton reveal active stagger-2">
+          <div class="product-card">
+            <div class="skeleton" style="height: 220px;"></div>
+            <div class="product-card-body">
+              <div class="skeleton mb-3" style="height: 28px; width: 60%;"></div>
+              <div class="skeleton mb-4" style="height: 18px; width: 90%;"></div>
+              <div class="skeleton mt-auto" style="height: 50px; width: 100%; border-radius: 12px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="mm-products-empty" class="text-center py-20 d-none">
+        <div class="empty-state mx-auto" style="max-width: 600px;">
+          <div class="empty-icon">🌿</div>
+          <h3>The vault is empty.</h3>
+          <p>We are currently updating our collection with fresh arrivals. Please return shortly.</p>
+          <a href="index.html" class="btn-subscribe mm-magnetic" style="max-width: 200px; margin: 0 auto; display: block; text-decoration: none;">Return to Home</a>
+        </div>
       </div>
     </main>
 
-    <div class="modal fade" id="mmSubModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4">
-          <div class="modal-header">
-            <div>
-              <div class="fw-bold" id="mmSubTitle">Start subscription</div>
-              <div class="text-muted" style="font-size: 13px" id="mmSubMeta"></div>
+    <!-- Subscription Modal -->
+    <div class="modal fade" id="mmSubModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-hover overflow-hidden" style="border-radius: 2rem; background: var(--bg-primary);">
+          <div class="row g-0">
+            <div class="col-lg-5 d-none d-lg-block">
+              <div id="mmSubProductHero" class="h-100" style="background-size: cover; background-position: center;"></div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div id="mmSubAlert" class="alert d-none" role="alert"></div>
-            <form id="mmSubForm">
-              <input type="hidden" name="product_id" />
-              <div class="row g-3">
-                <div class="col-6">
-                  <label class="form-label">Quantity</label>
-                  <input name="quantity" type="number" min="1" class="form-control mm-input" value="1" />
+            <div class="col-lg-7">
+              <div class="p-8 p-lg-10">
+                <div class="d-flex justify-content-between align-items-start mb-8">
+                  <div>
+                    <h2 class="h3 fw-800 text-primary mb-1" id="mmSubProductName">Product Name</h2>
+                    <div class="h4 fw-700 text-accent-primary" id="mmSubProductPrice">₹0.00</div>
+                  </div>
+                  <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="col-6">
-                  <label class="form-label">Frequency</label>
-                  <select name="frequency" class="form-select mm-input">
-                    <option value="daily" selected>Daily</option>
-                    <option value="alternate">Alternate</option>
-                    <option value="weekly">Weekly</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Start date</label>
-                  <input name="start_date" type="date" class="form-control mm-input" />
-                </div>
+
+                <div id="mmSubAlert" class="alert d-none small mb-6 border-0 text-center" role="alert"></div>
+                
+                <form id="mmSubForm">
+                  <input type="hidden" name="product_id" />
+                  
+                  <div class="mb-8">
+                    <label class="profile-field-label mb-3">Delivery Frequency</label>
+                    <div class="d-flex flex-wrap gap-2">
+                      <input type="radio" class="btn-check" name="frequency" id="freq-daily" value="daily" checked>
+                      <label class="btn mm-btn-secondary flex-grow-1" for="freq-daily">Daily</label>
+                      
+                      <input type="radio" class="btn-check" name="frequency" id="freq-alternate" value="alternate">
+                      <label class="btn mm-btn-secondary flex-grow-1" for="freq-alternate">Alternate</label>
+                      
+                      <input type="radio" class="btn-check" name="frequency" id="freq-weekly" value="weekly">
+                      <label class="btn mm-btn-secondary flex-grow-1" for="freq-weekly">Weekly</label>
+                    </div>
+                  </div>
+
+                  <div class="row g-4 mb-10">
+                    <div class="col-md-6">
+                      <label class="profile-field-label mb-3">Quantity</label>
+                      <div class="qty-control" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                        <button type="button" class="qty-btn" onclick="updateQty(-1)" style="color: var(--text-primary)">−</button>
+                        <input name="quantity" type="number" class="qty-input" value="1" min="1" readonly style="color: var(--text-primary)">
+                        <button type="button" class="qty-btn" onclick="updateQty(1)" style="color: var(--text-primary)">+</button>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="profile-field-label mb-3">Start Date</label>
+                      <input name="start_date" type="date" class="mm-input py-2">
+                    </div>
+                  </div>
+
+                  <div class="mm-card border-0 mb-10 p-6 shadow-soft" style="background: var(--accent-cream);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div class="text-primary small fw-bold text-uppercase">Monthly Estimate</div>
+                      <div class="h4 mb-0 text-accent-primary fw-800" id="mmSubEstimate">₹0.00</div>
+                    </div>
+                    <div class="text-secondary small opacity-50" id="mmSubBreakdown">0 deliveries projected</div>
+                  </div>
+
+                  <button class="btn mm-btn-primary w-100 py-4 mm-magnetic" type="submit">
+                    Subscribe Now
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="m5 12 5 5L20 7"/></svg>
+                  </button>
+                </form>
               </div>
-              <div class="mm-card p-3 mt-3">
-                <div class="d-flex justify-content-between">
-                  <div class="text-muted">Estimated monthly cost</div>
-                  <div class="fw-bold" id="mmSubEstimate">-</div>
-                </div>
-                <div class="text-muted mt-1" style="font-size: 13px" id="mmSubBreakdown"></div>
-              </div>
-              <button class="btn mm-btn-primary w-100 mt-3" type="submit">Confirm subscription</button>
-            </form>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="runtime-config.js"></script>
     <script src="app.js"></script>
     <script>
-      const accountLink = document.getElementById("mm-account-link");
       const logoutBtn = document.getElementById("mm-logout");
       const escapeHtml = window.MilkMan.utils.escapeHtml;
       const formatCurrency = window.MilkMan.utils.formatCurrency;
       const productImageSources = window.MilkMan.products.getImageSources;
       const fallbackImage = window.MilkMan.products.defaultImage;
 
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('active');
+        });
+      }, { threshold: 0.1 });
+
       function setLoggedIn(isLoggedIn) {
         if (isLoggedIn) {
-          accountLink.textContent = "Dashboard";
-          accountLink.href = "dashboard.html";
           logoutBtn.classList.remove("d-none");
         } else {
-          accountLink.textContent = "Login";
-          accountLink.href = "login.html";
           logoutBtn.classList.add("d-none");
         }
       }
 
-      function hydrateImages(scope) {
-        scope.querySelectorAll("img[data-fallback]").forEach((img) => {
-          img.addEventListener("error", () => {
-            const current = img.getAttribute("src");
-            const fallbacks = JSON.parse(img.dataset.fallbacks || "[]");
-            const next = fallbacks.shift();
-
-            if (fallbacks.length) {
-              img.dataset.fallbacks = JSON.stringify(fallbacks);
-            } else {
-              img.removeAttribute("data-fallbacks");
-            }
-
-            if (next && current !== next) {
-              img.setAttribute("src", next);
-              return;
-            }
-            if (img.dataset.final && current !== img.dataset.final) {
-              img.setAttribute("src", img.dataset.final);
-            }
-          });
-        });
+      function updateQty(delta) {
+        const input = document.querySelector('[name=quantity]');
+        const newVal = Math.max(1, parseInt(input.value) + delta);
+        input.value = newVal;
+        refreshEstimate();
       }
 
       logoutBtn.addEventListener("click", async () => {
@@ -144,19 +213,11 @@
         setLoggedIn(false);
       });
 
-      (async () => {
-        try {
-          await window.MilkMan.auth.me();
-          setLoggedIn(true);
-        } catch {
-          setLoggedIn(false);
-        }
-      })();
+
+
 
       const productsEl = document.getElementById("mm-products");
-      const loadingEl = document.getElementById("mm-products-loading");
       const emptyEl = document.getElementById("mm-products-empty");
-
       const modalEl = document.getElementById("mmSubModal");
       const modal = new bootstrap.Modal(modalEl);
       const form = document.getElementById("mmSubForm");
@@ -165,8 +226,8 @@
       const breakdownEl = document.getElementById("mmSubBreakdown");
 
       function showAlert(type, message) {
-        alertBox.className = "alert";
-        alertBox.classList.add(type === "success" ? "alert-success" : "alert-danger");
+        alertBox.className = "alert py-3 px-4 rounded-4";
+        alertBox.classList.add(type === "success" ? "text-success bg-success bg-opacity-10" : "text-danger bg-danger bg-opacity-10");
         alertBox.textContent = message;
         alertBox.classList.remove("d-none");
       }
@@ -200,7 +261,7 @@
       async function refreshEstimate() {
         const productId = form.querySelector("[name=product_id]").value;
         const quantity = form.querySelector("[name=quantity]").value || 1;
-        const frequency = form.querySelector("[name=frequency]").value || "daily";
+        const frequency = form.querySelector('input[name="frequency"]:checked').value || "daily";
         try {
           const preview = await window.MilkMan.apiFetch(
             `/api/subscriptions/preview?product_id=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(
@@ -208,9 +269,7 @@
             )}&frequency=${encodeURIComponent(frequency)}`
           );
           estimateEl.textContent = formatCurrency(preview.estimated_monthly_total || 0);
-          breakdownEl.textContent = `${preview.deliveries_per_month} deliveries/month | ${formatCurrency(
-            preview.unit_price || 0
-          )} per unit`;
+          breakdownEl.textContent = `${preview.deliveries_per_month} projected deliveries`;
         } catch {
           estimateEl.textContent = "-";
           breakdownEl.textContent = "";
@@ -220,57 +279,89 @@
       async function openSubscribe(product) {
         const ok = await requireLogin();
         if (!ok) return;
-        hideAlert();
-        form.reset();
-        form.querySelector("[name=product_id]").value = product.id;
-        document.getElementById("mmSubTitle").textContent = `Subscribe: ${product.name}`;
-        document.getElementById("mmSubMeta").textContent = `${product.size || ""} | ${formatCurrency(
-          product.price || 0
-        )}`;
-        setTodayAsDefaultStart();
-        await refreshEstimate();
-        modal.show();
+        try {
+          hideAlert();
+          form.reset();
+          form.querySelector("[name=product_id]").value = product.id;
+          const image = productImageSources(product);
+          document.getElementById("mmSubProductHero").style.backgroundImage = `url(${image.primary})`;
+          document.getElementById("mmSubProductName").textContent = product.name;
+          document.getElementById("mmSubProductPrice").textContent = formatCurrency(product.price || 0);
+          setTodayAsDefaultStart();
+          await refreshEstimate();
+          modal.show();
+        } catch (err) {
+          console.error("openSubscribe error:", err);
+          showAlert("error", err.message || "Could not open subscription form.");
+        }
       }
 
       function productCard(product) {
-        const image = productImageSources(product);
+        // Use image_url from API, resolve /static/ paths to full Flask URL
+        const resolveImageUrl = window.MilkMan.utils.resolveImageUrl;
+        const rawSrc = product.image_url || product.image || '';
+        const imgSrc = resolveImageUrl(rawSrc);
+
+        // Pick an emoji based on category or name for the placeholder
+        const name = (product.name || '').toLowerCase();
+        const cat  = (product.category || '').toLowerCase();
+        let emoji = '🥛';
+        if (name.includes('butter') || cat.includes('butter'))   emoji = '🧈';
+        else if (name.includes('paneer') || name.includes('cheese')) emoji = '🧀';
+        else if (name.includes('curd') || name.includes('yogurt') || name.includes('yoghurt')) emoji = '🍶';
+        else if (name.includes('ghee'))  emoji = '🫙';
+        else if (name.includes('cream')) emoji = '🍦';
+        else if (name.includes('egg'))   emoji = '🥚';
+
+        const imageSection = imgSrc ? `
+          <img
+            src="${escapeHtml(imgSrc)}"
+            alt="${escapeHtml(product.name)}"
+            loading="lazy"
+            style="width:100%;height:100%;object-fit:cover;"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+          />
+          <div class="placeholder-inner" style="display:none;">
+            <div class="placeholder-icon">${emoji}</div>
+            <div class="placeholder-label">Image unavailable</div>
+          </div>
+        ` : `
+          <div class="placeholder-inner">
+            <div class="placeholder-icon">${emoji}</div>
+            <div class="placeholder-label">${escapeHtml(product.unit || 'Fresh Daily')}</div>
+          </div>
+        `;
+
         return `
-          <article class="mm-card mm-product-card h-100">
-            <div class="mm-product-media">
-              <img
-                class="mm-product-image"
-                src="${escapeHtml(image.primary)}"
-                alt="${escapeHtml(product.name || "MilkMan product")}"
-                data-fallback="${escapeHtml((image.fallbacks && image.fallbacks[0]) || fallbackImage)}"
-                data-fallbacks='${escapeHtml(JSON.stringify(image.fallbacks || []))}'
-                data-final="${escapeHtml(image.final || fallbackImage)}"
-                loading="lazy"
-              />
-            </div>
-            <div class="mm-product-body">
-              <div class="mm-product-meta">
-                <h2 class="mm-product-title">${escapeHtml(product.name || "Untitled product")}</h2>
-                <div class="mm-product-price">${formatCurrency(product.price || 0)}</div>
+          <div class="col-sm-6 col-lg-4 reveal">
+            <article class="product-card h-100">
+              <div class="${imgSrc ? 'product-card-image' : 'product-card-image product-placeholder'}">
+                ${imageSection}
+                <span class="product-quantity-badge">${escapeHtml(product.unit || 'Fresh Daily')}</span>
               </div>
-              <p class="mm-product-copy">${escapeHtml(
-                product.description || "Fresh dairy delivered to your doorstep."
-              )}</p>
-              <div class="mm-product-footer">
-                <div>
-                  <div class="mm-product-note">${escapeHtml(product.size || "Available in multiple sizes")}</div>
-                </div>
-                <button class="mm-product-cta border-0" type="button">Subscribe</button>
+              <div class="product-card-body">
+                <div class="product-name">${escapeHtml(product.name)}</div>
+                <p class="product-description">${escapeHtml(product.description || 'Farm-fresh quality, delivered with care.')}</p>
+                <div class="product-price">${formatCurrency(product.price)}</div>
+                <button class="btn-subscribe mm-magnetic" type="button">Subscribe to Chapter</button>
               </div>
-            </div>
-          </article>
+            </article>
+          </div>
         `;
       }
 
-      form.addEventListener("input", () => refreshEstimate());
+
+      form.addEventListener("change", (e) => {
+        if (e.target.name === 'frequency') refreshEstimate();
+      });
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         hideAlert();
+        const btn = form.querySelector('button');
+        btn.disabled = true;
+        btn.textContent = "Initializing...";
+        
         const fd = new FormData(form);
         const payload = Object.fromEntries(fd.entries());
         payload.quantity = Number(payload.quantity || 1);
@@ -279,31 +370,43 @@
             method: "POST",
             body: JSON.stringify(payload),
           });
-          showAlert("success", "Subscription created successfully");
-          setTimeout(() => window.location.replace("dashboard.html"), 700);
+          window.MilkMan.utils.celebrate();
+          setTimeout(() => window.location.replace("dashboard.html"), 2000);
         } catch (err) {
           showAlert("error", err.message || "Subscription failed");
+          btn.disabled = false;
+          btn.textContent = "Initialize Subscription";
         }
       });
 
+      // Auth check first, THEN load products — ensures event listeners are
+      // only attached when we know the user is authenticated.
       (async () => {
         try {
+          await window.MilkMan.auth.me();
+          setLoggedIn(true);
+        } catch {
+          window.location.replace("login.html");
+          return;
+        }
+
+        // User is authenticated — now load products
+        try {
           const products = await window.MilkMan.apiFetch("/api/products/");
-          loadingEl.classList.add("d-none");
+          productsEl.innerHTML = '';
+
           if (!products || !products.length) {
             emptyEl.classList.remove("d-none");
             return;
           }
           products.forEach((product) => {
-            const col = document.createElement("div");
-            col.className = "col-12 col-md-6 col-xl-4";
-            col.innerHTML = productCard(product);
-            hydrateImages(col);
-            col.querySelector("button").addEventListener("click", () => openSubscribe(product));
-            productsEl.appendChild(col);
+            productsEl.insertAdjacentHTML('beforeend', productCard(product));
+            const card = productsEl.lastElementChild;
+            observer.observe(card);
+            card.querySelector(".btn-subscribe").addEventListener("click", () => openSubscribe(product));
           });
         } catch (err) {
-          loadingEl.classList.add("d-none");
+          productsEl.innerHTML = '';
           emptyEl.classList.remove("d-none");
         }
       })();

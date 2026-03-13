@@ -1,0 +1,30 @@
+  Removed old DB: D:\Bizmetric\F.S.D\Milk-Man-Project\MilkMan\backend\instance\milkman.db
+Creating database tables...
+  + Category: Cow Milk
+  + Category: Buffalo Milk
+  + Category: Dairy Products
+  + Admin: admin@milkman.com
+  + Staff: staff1@milkman.com
+  + Staff: staff2@milkman.com
+  + Customer: customer@milkman.com
+  + Customer: rajesh@milkman.com
+  + Customer: meera@milkman.com
+  + Customer: suresh@milkman.com
+  + Customer: kavita@milkman.com
+  + Product: Full Cream Cow Milk
+  + Product: Buffalo Milk
+  + Product: Pure Cow Ghee
+  + Product: White Butter
+  + Product: Fresh Paneer
+  + Product: Natural Curd
+  + Subscription: Ananya Joshi -> Full Cream Cow Milk (daily)
+  + Subscription: Ananya Joshi -> Pure Cow Ghee (weekly)
+  + Subscription: Ananya Joshi -> Natural Curd (alternate)
+  + Seeded orders
+
+Database seeded successfully!
+
+Login credentials:
+  Admin:    admin@milkman.com    / admin123
+  Staff:    staff1@milkman.com   / staff123
+  Customer: customer@milkman.com / customer123

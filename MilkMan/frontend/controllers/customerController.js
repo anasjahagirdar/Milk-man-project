@@ -1,5 +1,8 @@
 app.controller("CustomerController", function ($scope, $http) {
+  var apiUrl = window.MilkManAdmin.apiUrl;
   $scope.editId = null;
+  $scope.successMsg = "";
+  $scope.errorMsg = "";
 
   function resetForm() {
     $scope.editId = null;
@@ -8,10 +11,12 @@ app.controller("CustomerController", function ($scope, $http) {
     $scope.password = "";
     $scope.phone = "";
     $scope.address = "";
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
   }
 
   function load() {
-    $http.get("http://127.0.0.1:5000/api/customers/").then(function (res) {
+    $http.get(apiUrl("/api/customers/")).then(function (res) {
       $scope.customers = res.data.data || res.data;
     });
   }
@@ -19,8 +24,11 @@ app.controller("CustomerController", function ($scope, $http) {
   $scope.resetForm = resetForm;
 
   load();
+  resetForm();
 
   $scope.addCustomer = function () {
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
     var payload = {
       name: $scope.name,
       email: $scope.email,
@@ -30,29 +38,51 @@ app.controller("CustomerController", function ($scope, $http) {
     };
 
     if ($scope.editId) {
+      if (!payload.password) delete payload.password;
       $http
-        .put("http://127.0.0.1:5000/api/customers/" + $scope.editId, payload)
+        .put(apiUrl("/api/customers/" + $scope.editId), payload)
         .then(function () {
-          alert("Customer updated");
+          $scope.successMsg = "Customer updated.";
           resetForm();
           load();
+        })
+        .catch(function (err) {
+          $scope.errorMsg =
+            (err && err.data && (err.data.error || err.data.message)) ||
+            "Failed to update customer.";
         });
     } else {
-      $http.post("http://127.0.0.1:5000/api/customers/", payload).then(function () {
-        alert("Customer added");
-        resetForm();
-        load();
-      });
+      $http
+        .post(apiUrl("/api/customers/"), payload)
+        .then(function () {
+          $scope.successMsg = "Customer added.";
+          resetForm();
+          load();
+        })
+        .catch(function (err) {
+          $scope.errorMsg =
+            (err && err.data && (err.data.error || err.data.message)) ||
+            "Failed to add customer.";
+        });
     }
   };
 
   $scope.remove = function (id) {
     if (!confirm("Delete this customer?")) return;
 
-    $http.delete("http://127.0.0.1:5000/api/customers/" + id).then(function () {
-      alert("Customer deleted");
-      load();
-    });
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
+    $http
+      .delete(apiUrl("/api/customers/" + id))
+      .then(function () {
+        $scope.successMsg = "Customer deleted.";
+        load();
+      })
+      .catch(function (err) {
+        $scope.errorMsg =
+          (err && err.data && (err.data.error || err.data.message)) ||
+          "Failed to delete customer.";
+      });
   };
 
   $scope.edit = function (customer) {
@@ -62,5 +92,7 @@ app.controller("CustomerController", function ($scope, $http) {
     $scope.phone = customer.phone;
     $scope.address = customer.address;
     $scope.password = "";
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
   };
 });

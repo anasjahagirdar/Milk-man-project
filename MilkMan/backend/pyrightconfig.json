@@ -1,0 +1,7 @@
+{
+  "include": ["."],
+  "pythonVersion": "3.13",
+  "venvPath": ".",
+  "reportMissingImports": true,
+  "reportMissingModuleSource": false
+}

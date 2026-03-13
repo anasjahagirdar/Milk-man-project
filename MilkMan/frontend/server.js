@@ -5,7 +5,7 @@ const app = express();
 const frontendRoot = __dirname;
 const customerRoot = path.resolve(__dirname, "..", "customer-site");
 const port = Number(process.env.PORT || 3000);
-const host = process.env.HOST || "127.0.0.1";
+const host = process.env.HOST || "0.0.0.0";
 
 app.use(express.static(frontendRoot));
 app.use("/customer", express.static(customerRoot));

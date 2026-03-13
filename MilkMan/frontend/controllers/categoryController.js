@@ -1,4 +1,5 @@
 app.controller("CategoryController", function ($scope, $http) {
+  var apiUrl = window.MilkManAdmin.apiUrl;
   $scope.editId = null;
 
   function resetForm() {
@@ -8,7 +9,7 @@ app.controller("CategoryController", function ($scope, $http) {
   }
 
   function load() {
-    $http.get("http://127.0.0.1:5000/api/categories/").then(function (res) {
+    $http.get(apiUrl("/api/categories/")).then(function (res) {
       $scope.categories = res.data;
     });
   }
@@ -25,14 +26,14 @@ app.controller("CategoryController", function ($scope, $http) {
 
     if ($scope.editId) {
       $http
-        .put("http://127.0.0.1:5000/api/categories/" + $scope.editId, payload)
+        .put(apiUrl("/api/categories/" + $scope.editId), payload)
         .then(function () {
           alert("Category updated");
           resetForm();
           load();
         });
     } else {
-      $http.post("http://127.0.0.1:5000/api/categories/", payload).then(function () {
+      $http.post(apiUrl("/api/categories/"), payload).then(function () {
         alert("Category added");
         resetForm();
         load();
@@ -43,7 +44,7 @@ app.controller("CategoryController", function ($scope, $http) {
   $scope.remove = function (id) {
     if (!confirm("Delete this category?")) return;
 
-    $http.delete("http://127.0.0.1:5000/api/categories/" + id).then(function () {
+    $http.delete(apiUrl("/api/categories/" + id)).then(function () {
       alert("Category deleted");
       load();
     });

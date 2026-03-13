@@ -35,61 +35,81 @@ def _validate_password(password):
     return None
 
 
-# ------------------
-# ADMIN LOGIN
-# ------------------
-@auth_bp.route("/admin/login", methods=["POST"])
-def admin_login():
-
+# ------------------------------------------
+# UNIFIED LOGIN — handles admin, staff, customer
+# ------------------------------------------
+@auth_bp.route("/login", methods=["POST"])
+def unified_login():
     data = request.get_json() or {}
 
     email = _clean_email(data.get("email"))
     password = data.get("password")
 
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+    if not password:
+        return jsonify({"error": "Password is required"}), 400
+
+    # Check Admin first
     admin = Admin.query.filter_by(email=email).first()
+    if admin:
+        if not check_password_hash(admin.password, password):
+            return jsonify({"error": "Invalid credentials"}), 401
+        token = create_access_token(
+            identity=str(admin.id),
+            additional_claims={"role": "admin"}
+        )
+        return jsonify({
+            "access_token": token,
+            "role": "admin",
+            "user": admin.to_dict()
+        })
 
-    if not admin or not check_password_hash(admin.password, password):
-        return jsonify({"error": "Invalid credentials"}), 401
-
-    # IMPORTANT → identity must be STRING
-    token = create_access_token(identity=str(admin.id), additional_claims={"role": "admin"})
-
-    return jsonify({
-        "token": token,
-        "user": admin.to_dict()
-    })
-
-
-# ------------------
-# STAFF LOGIN
-# ------------------
-@auth_bp.route("/staff/login", methods=["POST"])
-def staff_login():
-
-    data = request.get_json() or {}
-
-    email = _clean_email(data.get("email"))
-    password = data.get("password")
-
+    # Check Staff
     staff = Staff.query.filter_by(email=email).first()
+    if staff:
+        if not check_password_hash(staff.password, password):
+            return jsonify({"error": "Invalid credentials"}), 401
+        token = create_access_token(
+            identity=str(staff.id),
+            additional_claims={"role": "staff"}
+        )
+        return jsonify({
+            "access_token": token,
+            "role": "staff",
+            "user": staff.to_dict()
+        })
 
-    if not staff or not check_password_hash(staff.password, password):
-        return jsonify({"error": "Invalid credentials"}), 401
+    # Check Customer
+    customer = Customer.query.filter_by(email=email).first()
+    if customer:
+        if not check_password_hash(customer.password, password):
+            return jsonify({"error": "Invalid credentials"}), 401
+        access_token = create_access_token(
+            identity=str(customer.id),
+            additional_claims={"role": "customer"},
+        )
+        refresh_token = create_refresh_token(
+            identity=str(customer.id),
+            additional_claims={"role": "customer"},
+        )
+        resp = jsonify({
+            "access_token": access_token,
+            "role": "customer",
+            "user": customer.to_dict()
+        })
+        set_access_cookies(resp, access_token)
+        set_refresh_cookies(resp, refresh_token)
+        return resp
 
-    token = create_access_token(identity=str(staff.id), additional_claims={"role": "staff"})
-
-    return jsonify({
-        "token": token,
-        "user": staff.to_dict()
-    })
+    return jsonify({"error": "No account found with that email"}), 404
 
 
-# ------------------
-# CUSTOMER SIGNUP
-# ------------------
-@auth_bp.route("/customer/signup", methods=["POST"])
-def customer_signup():
-
+# ------------------------------------------
+# PUBLIC REGISTRATION (for customers)
+# ------------------------------------------
+@auth_bp.route("/register", methods=["POST"])
+def register():
     data = request.get_json() or {}
 
     name = (data.get("name") or "").strip()
@@ -100,7 +120,6 @@ def customer_signup():
 
     if not name:
         return jsonify({"error": "Name is required"}), 400
-
     if not email or not _EMAIL_RE.match(email):
         return jsonify({"error": "Valid email is required"}), 400
 
@@ -135,25 +154,79 @@ def customer_signup():
         additional_claims={"role": "customer"},
     )
 
-    resp = jsonify({"user": customer.to_dict(), "token": access_token})
+    resp = jsonify({
+        "access_token": access_token,
+        "role": "customer",
+        "user": customer.to_dict()
+    })
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
     return resp, 201
 
 
 # ------------------
-# CUSTOMER LOGIN
+# LEGACY ADMIN LOGIN (kept for backward compat)
+# ------------------
+@auth_bp.route("/admin/login", methods=["POST"])
+def admin_login():
+    data = request.get_json() or {}
+    email = _clean_email(data.get("email"))
+    password = data.get("password")
+
+    admin = Admin.query.filter_by(email=email).first()
+    if not admin or not check_password_hash(admin.password, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    token = create_access_token(identity=str(admin.id), additional_claims={"role": "admin"})
+    return jsonify({
+        "access_token": token,
+        "token": token,  # legacy compat
+        "role": "admin",
+        "user": admin.to_dict()
+    })
+
+
+# ------------------
+# LEGACY STAFF LOGIN
+# ------------------
+@auth_bp.route("/staff/login", methods=["POST"])
+def staff_login():
+    data = request.get_json() or {}
+    email = _clean_email(data.get("email"))
+    password = data.get("password")
+
+    staff = Staff.query.filter_by(email=email).first()
+    if not staff or not check_password_hash(staff.password, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    token = create_access_token(identity=str(staff.id), additional_claims={"role": "staff"})
+    return jsonify({
+        "access_token": token,
+        "token": token,
+        "role": "staff",
+        "user": staff.to_dict()
+    })
+
+
+# ------------------
+# LEGACY CUSTOMER SIGNUP
+# ------------------
+@auth_bp.route("/customer/signup", methods=["POST"])
+def customer_signup():
+    # Delegate to register
+    return register()
+
+
+# ------------------
+# LEGACY CUSTOMER LOGIN
 # ------------------
 @auth_bp.route("/customer/login", methods=["POST"])
 def customer_login():
-
     data = request.get_json() or {}
-
     email = _clean_email(data.get("email"))
     password = data.get("password")
 
     customer = Customer.query.filter_by(email=email).first()
-
     if not customer or not check_password_hash(customer.password, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
@@ -166,7 +239,12 @@ def customer_login():
         additional_claims={"role": "customer"},
     )
 
-    resp = jsonify({"token": access_token, "user": customer.to_dict()})
+    resp = jsonify({
+        "access_token": access_token,
+        "token": access_token,
+        "role": "customer",
+        "user": customer.to_dict()
+    })
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
     return resp
@@ -190,7 +268,7 @@ def customer_refresh():
         identity=str(user_id),
         additional_claims={"role": "customer"},
     )
-    resp = jsonify({"token": access_token})
+    resp = jsonify({"access_token": access_token})
     set_access_cookies(resp, access_token)
     return resp
 

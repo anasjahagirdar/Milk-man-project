@@ -3,49 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MilkMan - Fresh Dairy Subscriptions</title>
+    <title>MilkMan — The Future of Dairy</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="mm-page">
-    <nav class="navbar navbar-expand-lg mm-nav sticky-top">
+  <body>
+    <nav class="navbar navbar-expand-lg mm-nav fixed-top">
       <div class="container">
-        <a class="navbar-brand mm-brand" href="index.html">MilkMan</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mmNav"
-          aria-controls="mmNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+        <a class="navbar-brand" href="index.html">MILKMAN</a>
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#mmNav">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mmNav">
-          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 mt-3 mt-lg-0">
-            <li class="nav-item"><a class="nav-link" href="#products">Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#why">Why us</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-            <li class="nav-item ms-lg-2">
-              <a id="mm-account-link" class="btn btn-sm mm-btn-secondary" href="login.html">
-                Login
-              </a>
+          <ul class="navbar-nav ms-auto align-items-center gap-4">
+            <li class="nav-item"><a class="nav-link" href="#story">Our Story</a></li>
+            <li class="nav-item"><a class="nav-link" href="products.html">Catalogue</a></li>
+            <li class="nav-item ms-lg-3">
+              <a id="mm-account-link" class="btn mm-btn-secondary btn-sm" href="login.html">Enter Experience</a>
             </li>
             <li class="nav-item">
-              <button id="mm-logout" class="btn btn-sm btn-outline-danger d-none" type="button">
-                Logout
-              </button>
+              <button id="mm-logout" class="btn btn-sm btn-outline-danger d-none" type="button">Logout</button>
             </li>
           </ul>
         </div>
@@ -53,308 +33,228 @@
     </nav>
 
     <header class="mm-hero">
-      <div class="container mm-hero-inner">
-        <div class="row align-items-center g-5">
-          <div class="col-lg-7 mm-fade-in">
-            <div class="mm-eyebrow">Daily delivery &bull; Farm-fresh &bull; Quality tested</div>
-            <h1 class="mm-hero-title">Pure dairy, delivered before sunrise.</h1>
-            <p class="mm-hero-subtitle">
-              Subscribe to milk, curd, paneer, ghee, and butter from trusted farms - fresh, clean,
-              and consistently delicious.
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-7 mm-hero-content text-lg-start text-center">
+            <span class="chapter-label reveal stagger-1">Chapter 01 / The Awakening</span>
+            <h1 class="display-1 text-gradient reveal stagger-2 mb-4">Your morning, <br/> reimagined.</h1>
+            <p class="lead text-secondary reveal stagger-3 mb-5" style="max-width: 600px;">
+              Pure dairy, delivered before you wake up. A seamless journey from farm to doorstep, narrated by quality.
             </p>
-            <div class="d-flex flex-wrap gap-2 mt-4">
-              <a id="mm-cta-primary" class="btn mm-btn-primary" href="login.html">
-                Start Subscription Today
+            <div class="d-flex flex-wrap justify-content-lg-start justify-content-center gap-3 reveal stagger-3">
+              <a id="mm-cta-primary" class="btn mm-btn-primary px-5 py-3 mm-magnetic" href="login.html">
+                Begin Your Subscription
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
               </a>
-              <a class="btn mm-btn-secondary" href="#products">Explore products</a>
-            </div>
-            <div class="d-flex flex-wrap gap-2 mt-4">
-              <span class="mm-pill">No hidden charges</span>
-              <span class="mm-pill">Pause anytime</span>
-              <span class="mm-pill">Transparent pricing</span>
+              <a class="btn mm-btn-secondary px-5 py-3 mm-magnetic" href="products.html">View Catalogue</a>
             </div>
           </div>
-          <div class="col-lg-5 mm-fade-in">
-            <div class="mm-card p-4">
-              <div class="d-flex align-items-center justify-content-between mb-3">
-                <div class="fw-bold">Today's Fresh Picks</div>
-                <a class="mm-link" href="products.html">View all</a>
-              </div>
-              <div id="mm-products-dynamic" class="row g-3"></div>
-              <div id="mm-products-empty" class="text-muted d-none">
-                Add products from the admin panel to see them here.
-              </div>
+          <div class="col-lg-5 d-none d-lg-block reveal stagger-2">
+            <div class="img-zoom-container shadow-hover">
+              <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=800&q=80" alt="Fresh Milk" class="img-fluid" style="border-radius: 2rem;">
             </div>
           </div>
         </div>
+      </div>
+      <div class="position-absolute bottom-0 start-50 translate-middle-x mb-5 reveal stagger-3">
+        <div class="text-muted small fw-bold text-uppercase ls-tight opacity-50 mb-2">Scroll to narrate</div>
+        <div class="mx-auto" style="width: 2px; height: 60px; background: linear-gradient(to bottom, var(--accent-primary), transparent);"></div>
       </div>
     </header>
 
-    <section id="products" class="mm-section">
+    <div class="ticker-container reveal">
+      <div class="ticker-track">
+        <div class="ticker-item"><span>CERTIFIED ORGANIC</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>
+        <div class="ticker-item"><span>FARM TO DOOR</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="ticker-item"><span>ZERO MIDDLEMEN</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+        <div class="ticker-item"><span>BEFORE 7 AM</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="ticker-item"><span>PLASTIC FREE</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <!-- Duplicate for loop -->
+        <div class="ticker-item"><span>CERTIFIED ORGANIC</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></div>
+        <div class="ticker-item"><span>FARM TO DOOR</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="ticker-item"><span>ZERO MIDDLEMEN</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+        <div class="ticker-item"><span>BEFORE 7 AM</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="ticker-item"><span>PLASTIC FREE</span> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+      </div>
+    </div>
+
+    <div class="wavy-divider"></div>
+
+    <section id="story" class="py-15 bg-soft">
       <div class="container">
-        <div class="row align-items-end g-4 mb-4">
-          <div class="col-lg-7">
-            <h2 class="mm-section-title">Everyday essentials, crafted for freshness.</h2>
-            <p class="mm-section-subtitle">
-              Premium dairy delivered on your schedule. Choose quantity and frequency, preview
-              monthly cost, and manage everything from your dashboard.
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6 reveal">
+            <span class="chapter-label">Chapter 02 / Sourcing</span>
+            <h2 class="display-2 mb-4">Direct from <br/>the heart of nature.</h2>
+            <p class="text-secondary mb-5 lead">
+              We've cut the noise. No middlemen, no long processing times. Just pure, farm-fresh goodness delivered with surgical precision.
             </p>
+            <div class="d-grid gap-4">
+              <div class="d-flex gap-4">
+                <div class="mm-btn-primary rounded-4 flex-shrink-0" style="width: 56px; height: 56px; display: grid; place-items: center; background: var(--bg-section-alt); color: var(--accent-primary);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                </div>
+                <div>
+                  <h4 class="mb-2">Safety Verified</h4>
+                  <p class="text-secondary small mb-0">Every batch undergoes 20+ quality checkpoints before it ever reaches your door.</p>
+                </div>
+              </div>
+              <div class="d-flex gap-4">
+                <div class="mm-btn-secondary rounded-4 flex-shrink-0" style="width: 56px; height: 56px; display: grid; place-items: center; background: var(--accent-cream); color: var(--accent-secondary); border-color: transparent;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <h4 class="mb-2">Hyper-Local</h4>
+                  <p class="text-secondary small mb-0">Partnering exclusively with local farmers to ensure maximum freshness and community support.</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-lg-5 text-lg-end">
-            <a class="btn mm-btn-secondary" href="products.html">Browse full catalogue</a>
-          </div>
-        </div>
-
-        <div class="row g-4">
-          <div class="col-md-6 col-xl-4">
-            <article class="mm-card mm-product-card h-100">
-              <div class="mm-product-media">
-                <img class="mm-product-image" src="assets/images/products/milk.avif" alt="Fresh milk" />
-              </div>
-              <div class="mm-product-body">
-                <div class="mm-product-meta">
-                  <h3 class="mm-product-title">Milk</h3>
-                </div>
-                <p class="mm-product-copy">Fresh milk from partner farms - delivered daily with reliable quality.</p>
-                <div class="mm-product-footer">
-                  <div>
-                    <div class="mm-product-note">Daily staple</div>
-                  </div>
-                  <a class="mm-product-cta" href="products.html">Subscribe</a>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div class="col-md-6 col-xl-4">
-            <article class="mm-card mm-product-card h-100">
-              <div class="mm-product-media">
-                <img class="mm-product-image" src="assets/images/products/curd.avif" alt="Curd" />
-              </div>
-              <div class="mm-product-body">
-                <div class="mm-product-meta">
-                  <h3 class="mm-product-title">Curd</h3>
-                </div>
-                <p class="mm-product-copy">Thick, creamy curd with a clean finish for everyday meals.</p>
-                <div class="mm-product-footer">
-                  <div>
-                    <div class="mm-product-note">Rich and smooth</div>
-                  </div>
-                  <a class="mm-product-cta" href="products.html">Subscribe</a>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div class="col-md-6 col-xl-4">
-            <article class="mm-card mm-product-card h-100">
-              <div class="mm-product-media">
-                <img class="mm-product-image" src="assets/images/products/paneer.jpg" alt="Paneer" />
-              </div>
-              <div class="mm-product-body">
-                <div class="mm-product-meta">
-                  <h3 class="mm-product-title">Paneer</h3>
-                </div>
-                <p class="mm-product-copy">Soft paneer prepared for consistent texture, freshness, and taste.</p>
-                <div class="mm-product-footer">
-                  <div>
-                    <div class="mm-product-note">Protein rich</div>
-                  </div>
-                  <a class="mm-product-cta" href="products.html">Subscribe</a>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div class="col-md-6 col-xl-6">
-            <article class="mm-card mm-product-card h-100">
-              <div class="mm-product-media">
-                <img class="mm-product-image" src="assets/images/products/ghee.avif" alt="Ghee" />
-              </div>
-              <div class="mm-product-body">
-                <div class="mm-product-meta">
-                  <h3 class="mm-product-title">Ghee</h3>
-                </div>
-                <p class="mm-product-copy">Aromatic ghee made for taste, nutrition, and a premium home-cooked finish.</p>
-                <div class="mm-product-footer">
-                  <div>
-                    <div class="mm-product-note">Traditional flavour</div>
-                  </div>
-                  <a class="mm-product-cta" href="products.html">Subscribe</a>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <div class="col-md-6 col-xl-6">
-            <article class="mm-card mm-product-card h-100">
-              <div class="mm-product-media">
-                <img class="mm-product-image" src="assets/images/products/butter.avif" alt="Butter" />
-              </div>
-              <div class="mm-product-body">
-                <div class="mm-product-meta">
-                  <h3 class="mm-product-title">Butter</h3>
-                </div>
-                <p class="mm-product-copy">Smooth butter for breakfast, baking, and easy everyday cooking.</p>
-                <div class="mm-product-footer">
-                  <div>
-                    <div class="mm-product-note">Kitchen essential</div>
-                  </div>
-                  <a class="mm-product-cta" href="products.html">Subscribe</a>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="mm-section" style="background: rgba(255, 255, 255, 0.2)">
-      <div class="container">
-        <div class="row align-items-center g-4">
-          <div class="col-lg-6">
-            <h2 class="mm-section-title">Built on trust, transparency, and taste.</h2>
-            <p class="mm-section-subtitle">
-              MilkMan works with reliable farms, runs quality checks, and delivers consistently so
-              families can enjoy dairy with confidence.
-            </p>
-          </div>
-          <div class="col-lg-6">
-            <div class="mm-card p-4">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="mm-pill w-100 justify-content-center">Direct from farms</div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mm-pill w-100 justify-content-center">Quality tested</div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mm-pill w-100 justify-content-center">Cold-chain delivery</div>
-                </div>
-                <div class="col-md-6">
-                  <div class="mm-pill w-100 justify-content-center">Pause anytime</div>
-                </div>
-              </div>
-              <div class="text-muted mt-3" style="line-height: 1.7">
-                From first pour to last sip, we keep dairy simple: clean sourcing, consistent
-                freshness, and an experience designed for everyday life.
-              </div>
+          <div class="col-lg-6 reveal" style="transition-delay: 0.2s">
+            <div class="img-zoom-container shadow-card">
+              <img src="https://images.unsplash.com/photo-1628088062854-d1870b4553da?auto=format&fit=crop&w=1200&q=80" alt="Dairy Farm Fresh" class="img-fluid" style="opacity: 0.9;">
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="why" class="mm-section">
+    <div class="wavy-divider" style="transform: rotate(180deg); background-color: var(--bg-section-alt);"></div>
+
+    <section id="catalogue" class="py-20">
       <div class="container">
-        <div class="row align-items-end g-4 mb-4">
-          <div class="col-lg-7">
-            <h2 class="mm-section-title">Why choose MilkMan?</h2>
-            <p class="mm-section-subtitle">
-              Premium experience, smooth subscription controls, and a clean, modern delivery flow.
-            </p>
-          </div>
+        <div class="text-center mb-15 reveal">
+          <span class="chapter-label">Chapter 03 / The Choice</span>
+          <h2 class="display-2 mb-3">The Essentials.</h2>
+          <p class="text-secondary mx-auto" style="max-width: 500px">Curated with intent, delivered with care.</p>
         </div>
-        <div class="row g-3">
-          <div class="col-md-6 col-lg-3">
-            <div class="mm-card p-4 h-100">
-              <div class="mm-icon">FS</div>
-              <div class="mm-feature-title">Freshness</div>
-              <p class="mm-feature-text">Delivered daily for consistent taste and quality.</p>
-            </div>
+
+        <div id="mm-products-dynamic" class="row g-4">
+          <!-- Dynamic products injected here -->
+        </div>
+        
+        <div id="mm-products-empty" class="text-center py-10 d-none">
+          <div class="mb-5 opacity-20">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" stroke-width="1.5"><path d="M21 8V21H3V8"/><path d="M1 3H23V8H1V3Z"/><path d="M10 12H14"/></svg>
           </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="mm-card p-4 h-100">
-              <div class="mm-icon">DF</div>
-              <div class="mm-feature-title">Direct from farms</div>
-              <p class="mm-feature-text">Transparent sourcing from trusted farm partners.</p>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="mm-card p-4 h-100">
-              <div class="mm-icon">QT</div>
-              <div class="mm-feature-title">Quality tested</div>
-              <p class="mm-feature-text">Clean standards and consistency you can rely on.</p>
-            </div>
-          </div>
-          <div class="col-md-6 col-lg-3">
-            <div class="mm-card p-4 h-100">
-              <div class="mm-icon">DD</div>
-              <div class="mm-feature-title">Daily delivery</div>
-              <p class="mm-feature-text">Simple controls to pause, resume, or cancel anytime.</p>
-            </div>
-          </div>
+          <p class="text-secondary ls-tight fw-bold">NARRATING THE CATALOGUE...</p>
+        </div>
+
+        <div class="text-center mt-15 reveal">
+          <a href="products.html" class="btn mm-btn-secondary px-5 py-3 mm-magnetic">Explore Full Experience</a>
         </div>
       </div>
     </section>
 
-    <section class="mm-section" style="background: rgba(255, 255, 255, 0.24)">
+    <div class="bg-sage py-20 overflow-hidden">
       <div class="container">
-        <div class="mm-card p-4 p-lg-5">
-          <div class="row align-items-center g-4">
-            <div class="col-lg-8">
-              <h2 class="mm-section-title mb-2">Ready to start your subscription?</h2>
-              <p class="mm-section-subtitle">
-                Choose a product, set quantity and frequency, and preview your monthly cost before
-                confirming.
-              </p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-              <a id="mm-cta-secondary" class="btn mm-btn-primary w-100 w-lg-auto" href="login.html">
-                Start Subscription Today
-              </a>
+        <div class="row g-5">
+          <div class="col-lg-4 reveal">
+            <span class="chapter-label">Chapter 04 / Trust</span>
+            <h2 class="display-2 mb-4">Voices from the <br/>morning ritual.</h2>
+            <p class="text-secondary lead mb-0">Real stories from families who have transformed their start of the day with us.</p>
+          </div>
+          <div class="col-lg-8">
+            <div class="row g-4">
+              <div class="col-md-6 reveal stagger-1">
+                <div class="mm-card mm-card-bloom h-100 border-0">
+                  <div class="mb-5 text-accent-primary">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="var(--accent-primary)"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H12.017V21H14.017ZM6.017 21L6.017 18C6.017 16.8954 6.91243 16 8.017 16H11.017C11.5693 16 12.017 15.5523 12.017 15V9C12.017 8.44772 11.5693 8 11.017 8H8.017C7.46472 8 7.017 8.44772 7.017 9V12C7.017 12.5523 6.56929 13 6.017 13H4.017V21H6.017Z"/></svg>
+                  </div>
+                  <p class="fs-5 fw-bold mb-6 ls-tight text-primary">"The quality is unlike anything we've had. Knowing it's from a local farm and seeing the delivery before I even wake up is magical."</p>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary bg-opacity-10 rounded-circle" style="width: 48px; height: 48px;"></div>
+                    <div>
+                      <div class="fw-bold small text-primary">Priya Sharma</div>
+                      <div class="text-secondary small opacity-50">Member since 2024</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 reveal stagger-2">
+                <div class="mm-card mm-card-bloom h-100 border-0">
+                  <div class="mb-5 text-accent-primary">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="var(--accent-primary)"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H12.017V21H14.017ZM6.017 21L6.017 18C6.017 16.8954 6.91243 16 8.017 16H11.017C11.5693 16 12.017 15.5523 12.017 15V9C12.017 8.44772 11.5693 8 11.017 8H8.017C7.46472 8 7.017 8.44772 7.017 9V12C7.017 12.5523 6.56929 13 6.017 13H4.017V21H6.017Z"/></svg>
+                  </div>
+                  <p class="fs-5 fw-bold mb-6 ls-tight text-primary">"A seamless experience. The dashboard gives me full control over my pipelines. It's the premium service I didn't know I needed."</p>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="bg-secondary bg-opacity-10 rounded-circle" style="width: 48px; height: 48px;"></div>
+                    <div>
+                      <div class="fw-bold small text-primary">Arjun Varma</div>
+                      <div class="text-secondary small opacity-50">Member since 2025</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <section class="py-25 reveal">
+      <div class="container">
+        <div class="mm-card text-center p-8 p-lg-15 border-0" style="background: var(--bg-hero);">
+          <span class="chapter-label mb-4">Epilogue / Join Us</span>
+          <h2 class="display-2 mb-5">Ready for your transformation?</h2>
+          <p class="lead text-secondary mb-8 mx-auto" style="max-width: 600px;">Join thousands of families who have elevated their morning ritual with MilkMan.</p>
+          <a class="btn mm-btn-primary px-5 py-4 btn-lg mm-magnetic" href="login.html">Begin Your Story</a>
+        </div>
+      </div>
     </section>
 
-    <footer id="contact" class="mm-footer">
+    <footer class="py-15 border-top border-color">
       <div class="container">
-        <div class="row g-4">
+        <div class="row g-5">
           <div class="col-lg-4">
-            <div class="mm-brand mb-2">MilkMan</div>
-            <div class="text-muted" style="line-height: 1.7">
-              Fresh dairy subscriptions with a clean, premium experience.
-            </div>
+            <h3 class="navbar-brand mb-4 d-block">MILKMAN</h3>
+            <p class="text-secondary small">Crafting the future of dairy subscriptions through storytelling and transparency.</p>
           </div>
-          <div class="col-6 col-lg-4">
-            <div class="fw-bold mb-2">Quick links</div>
-            <div class="d-flex flex-column gap-1">
-              <a href="#products">Products</a>
-              <a href="#about">About</a>
-              <a href="#why">Why choose us</a>
-              <a href="products.html">Catalogue</a>
-            </div>
+          <div class="col-6 col-lg-2">
+            <h6 class="text-primary fw-bold mb-4">Narrative</h6>
+            <ul class="list-unstyled d-grid gap-2 small">
+              <li><a href="#" class="text-secondary text-decoration-none hover-primary">Our Journey</a></li>
+              <li><a href="#" class="text-secondary text-decoration-none hover-primary">The Farms</a></li>
+              <li><a href="#" class="text-secondary text-decoration-none hover-primary">Safety Protocol</a></li>
+            </ul>
           </div>
-          <div class="col-6 col-lg-4">
-            <div class="fw-bold mb-2">Contact</div>
-            <div class="d-flex flex-column gap-1">
-              <a href="mailto:support@milkman.local">support@milkman.local</a>
-              <a href="tel:+910000000000">+91 00000 00000</a>
-              <div class="d-flex gap-3 mt-2">
-                <a href="#" aria-label="Instagram">Instagram</a>
-                <a href="#" aria-label="Twitter">Twitter</a>
-                <a href="#" aria-label="LinkedIn">LinkedIn</a>
-              </div>
+          <div class="col-lg-4 ms-auto text-lg-end">
+            <h6 class="text-primary fw-bold mb-4">Stay Connected</h6>
+            <div class="d-flex gap-3 justify-content-lg-end">
+              <a href="#" class="text-secondary hover-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a>
+              <a href="#" class="text-secondary hover-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></a>
             </div>
+            <p class="text-muted mt-5 small opacity-50">&copy; <span id="mm-year"></span> MILKMAN. All rights reserved.</p>
           </div>
-        </div>
-        <div class="text-muted mt-4" style="font-size: 13px">
-          &copy; <span id="mm-year"></span> MilkMan. All rights reserved.
         </div>
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="runtime-config.js"></script>
     <script src="app.js"></script>
     <script>
       document.getElementById("mm-year").textContent = new Date().getFullYear();
 
+      // Intersection Observer for Scroll Animations
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // Navbar Scroll Effect
+      window.addEventListener('scroll', () => {
+        document.querySelector('.mm-nav').classList.toggle('scrolled', window.scrollY > 50);
+      });
+
       const accountLink = document.getElementById("mm-account-link");
       const logoutBtn = document.getElementById("mm-logout");
       const ctaPrimary = document.getElementById("mm-cta-primary");
-      const ctaSecondary = document.getElementById("mm-cta-secondary");
       const escapeHtml = window.MilkMan.utils.escapeHtml;
       const formatCurrency = window.MilkMan.utils.formatCurrency;
       const productImageSources = window.MilkMan.products.getImageSources;
@@ -362,73 +262,67 @@
 
       function setLoggedIn(isLoggedIn) {
         if (isLoggedIn) {
-          accountLink.textContent = "Dashboard";
+          accountLink.textContent = "Your Dashboard";
           accountLink.href = "dashboard.html";
           logoutBtn.classList.remove("d-none");
           ctaPrimary.href = "products.html";
-          ctaSecondary.href = "products.html";
         } else {
-          accountLink.textContent = "Login";
+          accountLink.textContent = "Enter Experience";
           accountLink.href = "login.html";
           logoutBtn.classList.add("d-none");
           ctaPrimary.href = "login.html";
-          ctaSecondary.href = "login.html";
         }
       }
 
-      function hydrateImages(scope) {
-        scope.querySelectorAll("img[data-fallback]").forEach((img) => {
-          img.addEventListener("error", () => {
-            const current = img.getAttribute("src");
-            const fallbacks = JSON.parse(img.dataset.fallbacks || "[]");
-            const next = fallbacks.shift();
+      function productCard(product) {
+        const resolveImageUrl = window.MilkMan.utils.resolveImageUrl;
+        const rawSrc = product.image_url || product.image || '';
+        const imgSrc = resolveImageUrl(rawSrc);
 
-            if (fallbacks.length) {
-              img.dataset.fallbacks = JSON.stringify(fallbacks);
-            } else {
-              img.removeAttribute("data-fallbacks");
-            }
+        // Pick a dairy emoji based on product name
+        const name = (product.name || '').toLowerCase();
+        let emoji = '🥛';
+        if (name.includes('butter'))  emoji = '🧈';
+        else if (name.includes('paneer') || name.includes('cheese')) emoji = '🧀';
+        else if (name.includes('curd') || name.includes('yogurt')) emoji = '🍶';
+        else if (name.includes('ghee'))  emoji = '🫙';
+        else if (name.includes('cream')) emoji = '🍦';
+        else if (name.includes('egg'))   emoji = '🥚';
 
-            if (next && current !== next) {
-              img.setAttribute("src", next);
-              return;
-            }
-            if (img.dataset.final && current !== img.dataset.final) {
-              img.setAttribute("src", img.dataset.final);
-            }
-          });
-        });
-      }
+        const imageHtml = imgSrc ? `
+          <img
+            class="w-100 h-100 object-fit-cover"
+            src="${escapeHtml(imgSrc)}"
+            alt="${escapeHtml(product.name)}"
+            loading="lazy"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+          />
+          <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;background:var(--bg-section-alt);">
+            <div style="font-size:3rem;">${emoji}</div>
+            <div class="small text-muted mt-2">Image unavailable</div>
+          </div>
+        ` : `
+          <div style="display:flex;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;background:var(--bg-section-alt);">
+            <div style="font-size:3rem;">${emoji}</div>
+            <div class="small text-muted mt-2">${escapeHtml(product.unit || 'Fresh Daily')}</div>
+          </div>
+        `;
 
-      function compactProductCard(product) {
-        const image = productImageSources(product);
         return `
-          <article class="mm-card mm-product-card mm-product-card-compact h-100">
-            <div class="mm-product-media">
-              <img
-                class="mm-product-image"
-                src="${escapeHtml(image.primary)}"
-                alt="${escapeHtml(product.name || "MilkMan product")}"
-                data-fallback="${escapeHtml((image.fallbacks && image.fallbacks[0]) || fallbackImage)}"
-                data-fallbacks='${escapeHtml(JSON.stringify(image.fallbacks || []))}'
-                data-final="${escapeHtml(image.final || fallbackImage)}"
-                loading="lazy"
-              />
-            </div>
-            <div class="mm-product-body">
-              <div class="mm-product-meta">
-                <h3 class="mm-product-title">${escapeHtml(product.name || "Untitled product")}</h3>
-              </div>
-              <p class="mm-product-copy">${escapeHtml(product.description || product.size || "Fresh dairy delivered to your doorstep.")}</p>
-              <div class="mm-product-footer">
-                <div>
-                  <div class="mm-product-price">${formatCurrency(product.price || 0)}</div>
-                  <div class="mm-product-note">${escapeHtml(product.size || "Available now")}</div>
+          <div class="col-md-6 col-lg-3 reveal">
+            <div class="mm-card mm-card-bloom p-0 border-0 h-100 shadow-card">
+              <div class="img-zoom-container" style="aspect-ratio: 4/5; overflow:hidden;">
+                ${imageHtml}
+                <div class="position-absolute bottom-0 start-0 w-100 p-4" style="background: linear-gradient(to top, var(--bg-card), transparent);">
+                  <h3 class="h5 mb-1 text-primary">${escapeHtml(product.name)}</h3>
+                  <div class="text-accent-primary fw-bold">${formatCurrency(product.price)}</div>
                 </div>
-                <a class="mm-product-cta" href="products.html">Subscribe</a>
+              </div>
+              <div class="p-4 pt-0">
+                <a href="products.html" class="btn mm-btn-secondary w-100 btn-sm mm-magnetic">Subscribe</a>
               </div>
             </div>
-          </article>
+          </div>
         `;
       }
 
@@ -456,12 +350,12 @@
             return;
           }
           products.slice(0, 4).forEach((product) => {
-            const col = document.createElement("div");
-            col.className = "col-12 col-sm-6";
-            col.innerHTML = compactProductCard(product);
-            hydrateImages(col);
-            container.appendChild(col);
+            container.insertAdjacentHTML('beforeend', productCard(product));
           });
+          // Observe new elements
+          container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+          // Re-init magnetic for dynamic items
+          if(window.MilkMan.utils.initMagnetic) window.MilkMan.utils.initMagnetic();
         } catch {
           empty.classList.remove("d-none");
         }

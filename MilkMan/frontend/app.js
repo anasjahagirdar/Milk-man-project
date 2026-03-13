@@ -74,6 +74,21 @@ var navItems = [
   { path: "/orders", label: "Orders", icon: "bi-bag-check-fill" },
 ];
 
+var adminApiBaseUrl = (
+  (window.MILKMAN_RUNTIME && window.MILKMAN_RUNTIME.apiBaseUrl) ||
+  window.API_BASE ||
+  (window.location.protocol + "//" + window.location.hostname + ":5000")
+).replace(/\/+$/, "");
+
+window.MilkManAdmin = {
+  apiBaseUrl: adminApiBaseUrl,
+  apiUrl: function (path) {
+    if (!path) return adminApiBaseUrl;
+    if (/^https?:\/\//i.test(path)) return path;
+    return adminApiBaseUrl + path;
+  },
+};
+
 var app = angular.module("milkApp", ["ngRoute"]);
 
 app.run(function ($rootScope, $location) {

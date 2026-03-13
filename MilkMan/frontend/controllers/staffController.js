@@ -1,5 +1,8 @@
 app.controller("StaffController", function ($scope, $http) {
+  var apiUrl = window.MilkManAdmin.apiUrl;
   $scope.editId = null;
+  $scope.successMsg = "";
+  $scope.errorMsg = "";
 
   function resetForm() {
     $scope.editId = null;
@@ -7,11 +10,13 @@ app.controller("StaffController", function ($scope, $http) {
     $scope.email = "";
     $scope.password = "";
     $scope.phone = "";
-    $scope.role = "";
+    $scope.role = "staff";
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
   }
 
   function load() {
-    $http.get("http://127.0.0.1:5000/api/staff/").then(function (res) {
+    $http.get(apiUrl("/api/staff/")).then(function (res) {
       $scope.staff = res.data;
     });
   }
@@ -19,8 +24,11 @@ app.controller("StaffController", function ($scope, $http) {
   $scope.resetForm = resetForm;
 
   load();
+  resetForm();
 
   $scope.add = function () {
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
     var payload = {
       name: $scope.name,
       email: $scope.email,
@@ -30,27 +38,52 @@ app.controller("StaffController", function ($scope, $http) {
     };
 
     if ($scope.editId) {
-      $http.put("http://127.0.0.1:5000/api/staff/" + $scope.editId, payload).then(function () {
-        alert("Staff updated");
-        resetForm();
-        load();
-      });
+      // Don't send password on edit unless changed
+      if (!payload.password) delete payload.password;
+      $http
+        .put(apiUrl("/api/staff/" + $scope.editId), payload)
+        .then(function () {
+          $scope.successMsg = "Staff member updated.";
+          resetForm();
+          load();
+        })
+        .catch(function (err) {
+          $scope.errorMsg =
+            (err && err.data && (err.data.error || err.data.message)) ||
+            "Failed to update staff member.";
+        });
     } else {
-      $http.post("http://127.0.0.1:5000/api/staff/", payload).then(function () {
-        alert("Staff added");
-        resetForm();
-        load();
-      });
+      $http
+        .post(apiUrl("/api/staff/"), payload)
+        .then(function () {
+          $scope.successMsg = "Staff member added.";
+          resetForm();
+          load();
+        })
+        .catch(function (err) {
+          $scope.errorMsg =
+            (err && err.data && (err.data.error || err.data.message)) ||
+            "Failed to add staff member.";
+        });
     }
   };
 
   $scope.remove = function (id) {
     if (!confirm("Delete this staff member?")) return;
 
-    $http.delete("http://127.0.0.1:5000/api/staff/" + id).then(function () {
-      alert("Staff deleted");
-      load();
-    });
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
+    $http
+      .delete(apiUrl("/api/staff/" + id))
+      .then(function () {
+        $scope.successMsg = "Staff member removed.";
+        load();
+      })
+      .catch(function (err) {
+        $scope.errorMsg =
+          (err && err.data && (err.data.error || err.data.message)) ||
+          "Failed to delete staff member.";
+      });
   };
 
   $scope.edit = function (staff) {
@@ -59,6 +92,8 @@ app.controller("StaffController", function ($scope, $http) {
     $scope.email = staff.email;
     $scope.phone = staff.phone;
     $scope.role = staff.role;
-    $scope.password = "";
+    $scope.password = ""; // Clear — only set if changing
+    $scope.successMsg = "";
+    $scope.errorMsg = "";
   };
 });
