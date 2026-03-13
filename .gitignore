@@ -10,8 +10,8 @@ __pycache__/
 # =========================
 # Flask Instance & Database
 # =========================
-instance/
-*.db
+# instance/
+# *.db
 
 # =========================
 # Node
