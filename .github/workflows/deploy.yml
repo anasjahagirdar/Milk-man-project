@@ -1,0 +1,42 @@
+name: Deploy MilkMan to Azure VM
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_KEY }}
+          script: |
+            cd ~/Milk-man-project
+
+            # Pull latest code
+            git pull origin main
+
+            # Fix API base URL in frontend HTML files
+            grep -q 'window.API_BASE' MilkMan/frontend/index.html || \
+              sed -i 's|<meta charset="utf-8">|<meta charset="utf-8">\n<script>window.API_BASE = "/api";</script>|' MilkMan/frontend/index.html
+
+            grep -q 'window.API_BASE' MilkMan/customer-site/index.html || \
+              sed -i 's|<meta charset="utf-8" />|<meta charset="utf-8" />\n<script>window.API_BASE = "/api";</script>|' MilkMan/customer-site/index.html
+
+            # Backend — reinstall dependencies and restart
+            cd MilkMan/backend
+            source venv/bin/activate
+            pip install -r requirements.txt --quiet
+            pm2 restart milkman-backend
+
+            # Frontend — restart Node server
+            pm2 restart milkman-frontend
+
+            pm2 save
